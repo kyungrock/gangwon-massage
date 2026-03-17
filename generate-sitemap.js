@@ -14,9 +14,9 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-// GitHub Pages / 실제 도메인에 맞게 수정하세요.
-// 예: https://your-username.github.io/gangwon-massage
-const BASE_URL = 'https://example.com';
+// GitHub Pages 실제 도메인
+// 예: https://kyungrock.github.io/gangwon-massage
+const BASE_URL = 'https://kyungrock.github.io/gangwon-massage';
 
 const ROOT_DIR = __dirname;
 const SHOPS_FILE = path.join(ROOT_DIR, 'shops.json');
