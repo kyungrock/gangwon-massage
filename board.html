@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>강원도출장마사지 게시판 | 지역 · 서비스 검색</title>
+    <meta
+      name="description"
+      content="강원도 출장마사지 업체를 지역, 동, 서비스, 키워드로 상세하게 검색할 수 있는 게시판/리스트 페이지입니다."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="board">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="logo">강원도출장마사지</a>
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link">메인</a>
+          <a href="board.html" class="nav-link is-active">게시판/검색</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <section class="board-filters">
+        <div class="container">
+          <h1>강원도 출장마사지 검색 게시판</h1>
+          <p class="section-subtitle">
+            지역 · 동 · 서비스 · 키워드로 강원도 출장마사지 업체를 세부적으로 검색할 수 있습니다.
+          </p>
+          <form class="board-search-form" id="boardSearchForm">
+            <div class="form-row">
+              <label>
+                지역(도)
+                <select id="filterRegionBoard">
+                  <option value="">전체</option>
+                </select>
+              </label>
+              <label>
+                시/구
+                <select id="filterDistrictBoard">
+                  <option value="">전체</option>
+                </select>
+              </label>
+              <label>
+                동/읍/면
+                <select id="filterDongBoard">
+                  <option value="">전체</option>
+                </select>
+              </label>
+            </div>
+            <div class="form-row">
+              <label>
+                테마
+                <select id="filterTypeBoard">
+                  <option value="">전체</option>
+                  <option value="출장마사지">출장마사지</option>
+                  <option value="마사지">마사지</option>
+                  <option value="스웨디시">스웨디시</option>
+                  <option value="테라피">테라피</option>
+                </select>
+              </label>
+              <label class="grow">
+                키워드
+                <input
+                  type="search"
+                  id="filterKeywordBoard"
+                  placeholder="업체명, 서비스, 태그, 주소 검색"
+                />
+              </label>
+              <button type="submit" class="btn-primary">검색</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="board-list-section">
+        <div class="container">
+          <div class="board-meta">
+            <span id="totalCountLabel">총 0개 업체</span>
+            <select id="sortSelect" class="sort-select">
+              <option value="recommended">추천순</option>
+              <option value="rating_desc">평점 높은순</option>
+              <option value="review_desc">리뷰 많은순</option>
+              <option value="price_asc">가격 낮은순</option>
+            </select>
+          </div>
+
+          <div id="boardListContainer" class="board-list"></div>
+          <p id="boardNoResultsMessage" class="no-results" hidden>
+            조건에 맞는 업체가 없습니다. 필터를 다시 선택해보세요.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© <span id="currentYear"></span> 강원도출장마사지. All rights reserved.</p>
+        <a href="robots.txt" class="footer-link">robots.txt</a>
+        <a href="sitemap.xml" class="footer-link">sitemap.xml</a>
+      </div>
+    </footer>
+
+    <!-- 데이터 및 스크립트 -->
+    <script src="shops.json"></script>
+    <script src="shop-card-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+

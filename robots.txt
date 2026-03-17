@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# 강원도출장마사지 사이트맵 위치 (도메인에 맞게 수정)
+Sitemap: https://example.com/sitemap.xml
+
