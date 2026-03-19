@@ -1,13 +1,14 @@
 /**
  * generate-sitemap.js
  *
- * shops.json (window.shopsData = { shops: [...] })에서 업체 ID를 읽어
- * index.html, board.html, detail.html?id=업체ID 형태의 URL을 sitemap.xml에 자동으로 기록합니다.
+ * sitemap.xml 자동 생성
+ * - index.html, board.html, districts/* (시·군 정적 리스트)
+ * - detail.html?id=업체ID (실제 서비스와 동일한 동적 상세 URL)
+ *
+ * shops/*.html 정적 상세는 배포하지 않는 경우가 많아 sitemap에 넣지 않습니다.
  *
  * 사용법:
- *   1) Node.js 18+ 설치
- *   2) 프로젝트 루트(이 파일이 있는 폴더)에서:
- *        node generate-sitemap.js
+ *   node generate-sitemap.js
  */
 
 const fs = require('fs');
@@ -54,6 +55,14 @@ function loadShopsFromScriptFile(filePath) {
   return data.shops;
 }
 
+function escapeXmlLoc(url) {
+  return String(url || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 function buildSitemapXml(urls) {
   const now = new Date().toISOString();
   const lines = [];
@@ -64,7 +73,7 @@ function buildSitemapXml(urls) {
 
   urls.forEach((url) => {
     lines.push('  <url>');
-    lines.push(`    <loc>${url}</loc>`);
+    lines.push(`    <loc>${escapeXmlLoc(url)}</loc>`);
     lines.push(`    <lastmod>${now}</lastmod>`);
     lines.push('    <changefreq>daily</changefreq>');
     lines.push('    <priority>0.8</priority>');
@@ -101,7 +110,9 @@ function main() {
     urls.add(`${BASE_URL}/${rel}`);
   });
 
-  const xml = buildSitemapXml(Array.from(urls));
+  // URL 정렬(가독성/변경 diff 최소화)
+  const sorted = Array.from(urls).sort((a, b) => String(a).localeCompare(String(b)));
+  const xml = buildSitemapXml(sorted);
   fs.writeFileSync(SITEMAP_FILE, xml, 'utf8');
 
   console.log(` - sitemap.xml 생성 완료: ${SITEMAP_FILE}`);
