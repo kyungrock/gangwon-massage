@@ -14,6 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { SITE_ORIGIN } = require('./site.config.js');
 
 const ROOT = __dirname;
 const SHOPS_FILE = path.join(ROOT, 'shops.json');
@@ -96,7 +97,7 @@ function renderDetailHtml(shop, slug) {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     name: baseName,
-    url: `https://example.com/shops/${slug}.html`,
+    url: `${SITE_ORIGIN}/shops/${slug}.html`,
     image,
     telephone: shop.phone || undefined,
     address: {
@@ -155,7 +156,7 @@ function renderDetailHtml(shop, slug) {
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(desc)}" />
     <meta name="robots" content="index,follow" />
-    <link rel="canonical" href="https://example.com/shops/${slug}.html" />
+    <link rel="canonical" href="${SITE_ORIGIN}/shops/${slug}.html" />
     <link rel="stylesheet" href="../styles.css" />
     <script type="application/ld+json">
 ${JSON.stringify(ld, null, 2)}
@@ -164,9 +165,9 @@ ${JSON.stringify(ld, null, 2)}
   <body data-page="detail-static">
     <header class="site-header">
       <div class="container header-inner">
-        <a href="../index.html" class="logo">강원도출장마사지</a>
+        <a href="../index.html?region=강원" class="logo">강원도출장마사지</a>
         <nav class="main-nav">
-          <a href="../index.html" class="nav-link">메인</a>
+          <a href="../index.html?region=강원" class="nav-link">메인</a>
           <a href="../board.html" class="nav-link">게시판/검색</a>
         </nav>
       </div>
@@ -235,6 +236,11 @@ ${JSON.stringify(ld, null, 2)}
                         <div class="detail-course-title">${escapeHtml(
                           course.category || '프로그램'
                         )}</div>
+                        <div class="detail-course-head" aria-hidden="true">
+                          <span>코스</span>
+                          <span>시간</span>
+                          <span>가격</span>
+                        </div>
                         ${items
                           .map((item) => {
                             const name = escapeHtml(item.name || '');
@@ -247,16 +253,8 @@ ${JSON.stringify(ld, null, 2)}
                             return `<div class="detail-course-item">
                               <div class="detail-course-main">
                                 <span class="detail-course-name">${name}</span>
-                                ${
-                                  duration
-                                    ? `<span class="detail-course-time">${duration}</span>`
-                                    : ''
-                                }
-                                ${
-                                  price
-                                    ? `<span class="detail-course-price">${price}</span>`
-                                    : ''
-                                }
+                                <span class="detail-course-time">${duration}</span>
+                                <span class="detail-course-price">${price}</span>
                               </div>
                               ${
                                 desc

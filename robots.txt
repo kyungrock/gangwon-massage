@@ -2,5 +2,5 @@ User-agent: *
 Allow: /
 
 # 강원도출장마사지 사이트맵 위치
-Sitemap: https://kyungrock.github.io/gangwon-massage/sitemap.xml
+Sitemap: https://outcallmassage.co.kr/sitemap.xml
 

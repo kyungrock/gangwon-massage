@@ -13,10 +13,30 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { SITE_ORIGIN } = require('./site.config.js');
 
-// GitHub Pages 실제 도메인
-// 예: https://kyungrock.github.io/gangwon-massage
-const BASE_URL = 'https://kyungrock.github.io/gangwon-massage';
+const BASE_URL = SITE_ORIGIN;
+
+// 강원도 17개 시/군(shops.json district 기준: "강릉", "원주" 형태)
+const KANGWON_DISTRICTS = [
+  '춘천',
+  '원주',
+  '강릉',
+  '동해',
+  '태백',
+  '속초',
+  '삼척',
+  '홍천',
+  '횡성',
+  '영월',
+  '평창',
+  '정선',
+  '철원',
+  '화천',
+  '양구',
+  '고성',
+  '양양',
+];
 
 const ROOT_DIR = __dirname;
 const SHOPS_FILE = path.join(ROOT_DIR, 'shops.json');
@@ -71,6 +91,14 @@ function main() {
     if (!id) return;
     const encoded = encodeURIComponent(String(id));
     urls.add(`${BASE_URL}/detail.html?id=${encoded}`);
+  });
+
+  // 강원도 시/군 정적 리스트 페이지
+  KANGWON_DISTRICTS.forEach((district) => {
+    const fileName = `${district}출장마사지.html`;
+    // URL 경로 인코딩 (BASE_URL에 포함된 /는 유지)
+    const rel = encodeURI(`districts/${fileName}`);
+    urls.add(`${BASE_URL}/${rel}`);
   });
 
   const xml = buildSitemapXml(Array.from(urls));

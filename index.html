@@ -16,6 +16,7 @@
       content="강원도출장마사지, 강원도 마사지, 강릉 출장마사지, 원주 출장마사지, 춘천 출장마사지, 마사지 추천"
     />
     <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://outcallmassage.co.kr/" />
     <meta
       name="google-site-verification"
       content="LYk3yhvVTbgLyIUdJFqow5ynuyL_O9yzr2-7QPe6Phs"
@@ -28,7 +29,7 @@
       property="og:description"
       content="강원도 출장마사지 업체를 한곳에서 검색하고 비교하세요. 지역·동·서비스별 필터 지원."
     />
-    <meta property="og:url" content="https://example.com/" />
+    <meta property="og:url" content="https://outcallmassage.co.kr/" />
     <meta property="og:site_name" content="강원도출장마사지" />
 
     <!-- JSON-LD: Website -->
@@ -37,12 +38,12 @@
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "강원도출장마사지",
-        "url": "https://example.com/",
+        "url": "https://outcallmassage.co.kr/",
         "description": "강원도 출장마사지 업체를 지역·서비스별로 검색할 수 있는 플랫폼",
         "inLanguage": "ko",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://example.com/board.html?query={search_term_string}",
+          "target": "https://outcallmassage.co.kr/board.html?q={search_term_string}",
           "query-input": "required name=search_term_string"
         }
       }
@@ -53,15 +54,16 @@
   <body data-page="index">
     <header class="site-header">
       <div class="container header-inner">
-        <a href="index.html" class="logo">강원도출장마사지</a>
+        <a href="index.html?region=강원" class="logo">강원도출장마사지</a>
         <nav class="main-nav">
-          <a href="index.html" class="nav-link is-active">메인</a>
+          <a href="index.html?region=강원" class="nav-link is-active">메인</a>
           <a href="board.html" class="nav-link">게시판/검색</a>
         </nav>
       </div>
     </header>
 
     <main class="site-main">
+      <div class="home-top">
       <section class="hero">
         <div class="container hero-inner">
           <div class="hero-text">
@@ -72,18 +74,166 @@
               예약에 참고할 수 있는 플랫폼입니다.
             </p>
           </div>
+                              <!--INDEX_HERO_SEARCH_START-->
           <form class="hero-search" id="heroSearchForm">
             <div class="form-row">
               <label>
                 지역(도)
                 <select id="filterRegion">
                   <option value="">전체</option>
+                  <option value="강원">강원</option>
+                  <option value="경기">경기</option>
+                  <option value="경남">경남</option>
+                  <option value="경북">경북</option>
+                  <option value="광주">광주</option>
+                  <option value="대구">대구</option>
+                  <option value="대전">대전</option>
+                  <option value="부산">부산</option>
+                  <option value="서울">서울</option>
+                  <option value="세종">세종</option>
+                  <option value="울산">울산</option>
+                  <option value="인천">인천</option>
+                  <option value="전남">전남</option>
+                  <option value="전북">전북</option>
+                  <option value="제주">제주</option>
+                  <option value="충남">충남</option>
+                  <option value="충북">충북</option>
                 </select>
               </label>
               <label>
                 시/구
                 <select id="filterDistrict">
                   <option value="">전체</option>
+                  <option value="강남">강남</option>
+                  <option value="강남구">강남구</option>
+                  <option value="강동">강동</option>
+                  <option value="강동구">강동구</option>
+                  <option value="강릉">강릉</option>
+                  <option value="강북">강북</option>
+                  <option value="강서">강서</option>
+                  <option value="강서구">강서구</option>
+                  <option value="거제시">거제시</option>
+                  <option value="경산 혁신 현풍">경산 혁신 현풍</option>
+                  <option value="경주시">경주시</option>
+                  <option value="계양구">계양구</option>
+                  <option value="고성">고성</option>
+                  <option value="고양">고양</option>
+                  <option value="고양시">고양시</option>
+                  <option value="고양시 일산동구">고양시 일산동구</option>
+                  <option value="고양시 일산서구">고양시 일산서구</option>
+                  <option value="관악">관악</option>
+                  <option value="관악구">관악구</option>
+                  <option value="광명">광명</option>
+                  <option value="광산구">광산구</option>
+                  <option value="광주">광주</option>
+                  <option value="구로">구로</option>
+                  <option value="구리">구리</option>
+                  <option value="구리시">구리시</option>
+                  <option value="구미시">구미시</option>
+                  <option value="군산시">군산시</option>
+                  <option value="군포">군포</option>
+                  <option value="군포시">군포시</option>
+                  <option value="금남면">금남면</option>
+                  <option value="금정구">금정구</option>
+                  <option value="금천">금천</option>
+                  <option value="김포">김포</option>
+                  <option value="김해시">김해시</option>
+                  <option value="남구">남구</option>
+                  <option value="남동구">남동구</option>
+                  <option value="남양주">남양주</option>
+                  <option value="남양주시">남양주시</option>
+                  <option value="노원">노원</option>
+                  <option value="대전">대전</option>
+                  <option value="동구">동구</option>
+                  <option value="동대문">동대문</option>
+                  <option value="동두천">동두천</option>
+                  <option value="동래구">동래구</option>
+                  <option value="동작">동작</option>
+                  <option value="동해">동해</option>
+                  <option value="마포">마포</option>
+                  <option value="목포시">목포시</option>
+                  <option value="부산진구">부산진구</option>
+                  <option value="부천">부천</option>
+                  <option value="부천시">부천시</option>
+                  <option value="부평구">부평구</option>
+                  <option value="사상구">사상구</option>
+                  <option value="사하구">사하구</option>
+                  <option value="삼척">삼척</option>
+                  <option value="서구">서구</option>
+                  <option value="서울·경기 전지역">서울·경기 전지역</option>
+                  <option value="서울·경기·인천 전지역">서울·경기·인천 전지역</option>
+                  <option value="서울·인천·경기 전지역">서울·인천·경기 전지역</option>
+                  <option value="서초">서초</option>
+                  <option value="성남">성남</option>
+                  <option value="성남시 분당구">성남시 분당구</option>
+                  <option value="성동">성동</option>
+                  <option value="성북">성북</option>
+                  <option value="속초">속초</option>
+                  <option value="송파">송파</option>
+                  <option value="송파구">송파구</option>
+                  <option value="수성구">수성구</option>
+                  <option value="수영구">수영구</option>
+                  <option value="수원">수원</option>
+                  <option value="수원시 영통구">수원시 영통구</option>
+                  <option value="수원시 팔달구">수원시 팔달구</option>
+                  <option value="순천시">순천시</option>
+                  <option value="아산">아산</option>
+                  <option value="안산">안산</option>
+                  <option value="안성">안성</option>
+                  <option value="안양">안양</option>
+                  <option value="양구">양구</option>
+                  <option value="양산시">양산시</option>
+                  <option value="양양">양양</option>
+                  <option value="양주">양주</option>
+                  <option value="양주시">양주시</option>
+                  <option value="양천">양천</option>
+                  <option value="여수시">여수시</option>
+                  <option value="연수구">연수구</option>
+                  <option value="연제구">연제구</option>
+                  <option value="영등포">영등포</option>
+                  <option value="영월">영월</option>
+                  <option value="오산">오산</option>
+                  <option value="오산시">오산시</option>
+                  <option value="완주군">완주군</option>
+                  <option value="용인">용인</option>
+                  <option value="용인시">용인시</option>
+                  <option value="울주군">울주군</option>
+                  <option value="원주">원주</option>
+                  <option value="유성구">유성구</option>
+                  <option value="의왕">의왕</option>
+                  <option value="의정부">의정부</option>
+                  <option value="의정부시">의정부시</option>
+                  <option value="전주">전주</option>
+                  <option value="전주시">전주시</option>
+                  <option value="전지역">전지역</option>
+                  <option value="정선">정선</option>
+                  <option value="제주시">제주시</option>
+                  <option value="종로">종로</option>
+                  <option value="중구">중구</option>
+                  <option value="중랑구">중랑구</option>
+                  <option value="진주시">진주시</option>
+                  <option value="진천">진천</option>
+                  <option value="창원시 성산구">창원시 성산구</option>
+                  <option value="천안">천안</option>
+                  <option value="철원">철원</option>
+                  <option value="청주">청주</option>
+                  <option value="춘천">춘천</option>
+                  <option value="충주">충주</option>
+                  <option value="태백">태백</option>
+                  <option value="파주">파주</option>
+                  <option value="평창">평창</option>
+                  <option value="평택">평택</option>
+                  <option value="평택시">평택시</option>
+                  <option value="포천시">포천시</option>
+                  <option value="포항시">포항시</option>
+                  <option value="포항시 남구">포항시 남구</option>
+                  <option value="포항시 북구">포항시 북구</option>
+                  <option value="하남시">하남시</option>
+                  <option value="해운대구">해운대구</option>
+                  <option value="홍천">홍천</option>
+                  <option value="화성">화성</option>
+                  <option value="화천">화천</option>
+                  <option value="횡성">횡성</option>
                 </select>
               </label>
             </div>
@@ -92,6 +242,109 @@
                 동/읍/면
                 <select id="filterDong">
                   <option value="">전체</option>
+                  <option value="갈매">갈매</option>
+                  <option value="갈매동">갈매동</option>
+                  <option value="경안동">경안동</option>
+                  <option value="공도읍">공도읍</option>
+                  <option value="광적면">광적면</option>
+                  <option value="괘법동">괘법동</option>
+                  <option value="구리역">구리역</option>
+                  <option value="금정역">금정역</option>
+                  <option value="나운동">나운동</option>
+                  <option value="남구">남구</option>
+                  <option value="남포동">남포동</option>
+                  <option value="내덕동">내덕동</option>
+                  <option value="노대동">노대동</option>
+                  <option value="다산동">다산동</option>
+                  <option value="달동">달동</option>
+                  <option value="대봉동">대봉동</option>
+                  <option value="대소원면">대소원면</option>
+                  <option value="대연동">대연동</option>
+                  <option value="대흥동">대흥동</option>
+                  <option value="덕산동">덕산동</option>
+                  <option value="덕진구">덕진구</option>
+                  <option value="동호동">동호동</option>
+                  <option value="둔산동">둔산동</option>
+                  <option value="명동2가">명동2가</option>
+                  <option value="명지동">명지동</option>
+                  <option value="물금읍">물금읍</option>
+                  <option value="발곡로">발곡로</option>
+                  <option value="방어동">방어동</option>
+                  <option value="범천동">범천동</option>
+                  <option value="보광동3가">보광동3가</option>
+                  <option value="본오동">본오동</option>
+                  <option value="봉명동">봉명동</option>
+                  <option value="봉선동">봉선동</option>
+                  <option value="부용로">부용로</option>
+                  <option value="부전동">부전동</option>
+                  <option value="사직동">사직동</option>
+                  <option value="산북동">산북동</option>
+                  <option value="산수동">산수동</option>
+                  <option value="산정동">산정동</option>
+                  <option value="삼산동">삼산동</option>
+                  <option value="삼정동">삼정동</option>
+                  <option value="상동">상동</option>
+                  <option value="서동">서동</option>
+                  <option value="석정동">석정동</option>
+                  <option value="성남동">성남동</option>
+                  <option value="성정동">성정동</option>
+                  <option value="소라면">소라면</option>
+                  <option value="소흘읍">소흘읍</option>
+                  <option value="송정동">송정동</option>
+                  <option value="송천동1가">송천동1가</option>
+                  <option value="수송동">수송동</option>
+                  <option value="수완동">수완동</option>
+                  <option value="수택동">수택동</option>
+                  <option value="신가동">신가동</option>
+                  <option value="신호동">신호동</option>
+                  <option value="쌍촌동">쌍촌동</option>
+                  <option value="여서동">여서동</option>
+                  <option value="연수동">연수동</option>
+                  <option value="영통동">영통동</option>
+                  <option value="오목로225번길">오목로225번길</option>
+                  <option value="오창읍">오창읍</option>
+                  <option value="오포읍">오포읍</option>
+                  <option value="옥정동">옥정동</option>
+                  <option value="온산읍">온산읍</option>
+                  <option value="온천동">온천동</option>
+                  <option value="완산구">완산구</option>
+                  <option value="용포리">용포리</option>
+                  <option value="용해동">용해동</option>
+                  <option value="원동">원동</option>
+                  <option value="월계동">월계동</option>
+                  <option value="월산동">월산동</option>
+                  <option value="유촌동">유촌동</option>
+                  <option value="율량동">율량동</option>
+                  <option value="을지로5가">을지로5가</option>
+                  <option value="을지로6가">을지로6가</option>
+                  <option value="이서면">이서면</option>
+                  <option value="인계동">인계동</option>
+                  <option value="인동">인동</option>
+                  <option value="일산동">일산동</option>
+                  <option value="장덕동">장덕동</option>
+                  <option value="장유동">장유동</option>
+                  <option value="장평동">장평동</option>
+                  <option value="장항동">장항동</option>
+                  <option value="죽도동">죽도동</option>
+                  <option value="죽동">죽동</option>
+                  <option value="중동">중동</option>
+                  <option value="중앙동">중앙동</option>
+                  <option value="중앙동2가">중앙동2가</option>
+                  <option value="지곡동">지곡동</option>
+                  <option value="진접읍">진접읍</option>
+                  <option value="진평동">진평동</option>
+                  <option value="초월읍">초월읍</option>
+                  <option value="치평동">치평동</option>
+                  <option value="탄방동">탄방동</option>
+                  <option value="탄현동">탄현동</option>
+                  <option value="평거동">평거동</option>
+                  <option value="해도동">해도동</option>
+                  <option value="호원동">호원동</option>
+                  <option value="호평동">호평동</option>
+                  <option value="화도읍">화도읍</option>
+                  <option value="화장동">화장동</option>
+                  <option value="흑석동">흑석동</option>
+                  <option value="흥덕구 강서동">흥덕구 강서동</option>
                 </select>
               </label>
               <label>
@@ -117,12 +370,149 @@
               <button type="submit" class="btn-primary">검색</button>
             </div>
           </form>
+          <!--INDEX_HERO_SEARCH_END-->
         </div>
       </section>
 
       <section class="cards-section">
         <div class="container">
-          <div id="shopCardsContainer" class="cards-grid" aria-live="polite"></div>
+          <div
+            id="shopCardsContainer"
+            class="cards-grid"
+            data-ssr-built-for="강원"
+            aria-live="polite"
+          >
+            <!--INDEX_SHOP_CARDS_START-->
+
+      <article class="shop-card">
+        <a href="detail.html?id=gangwon_gangneung_gyodong_thebody_001" aria-label="더바디 상세보기">
+          <div class="shop-card-image">
+            <img src="images/강릉마사지_더바디.jpg" alt="더바디 마사지샵" loading="lazy" />
+            
+          </div>
+          <div class="shop-card-body">
+            <div class="shop-card-header">
+              <h2 class="shop-card-title">더바디</h2>
+              <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+            </div>
+            <div class="shop-card-meta">
+              <span>📍 <span>강원 강릉</span></span>
+              <span>⏱ <span>오전 10시 ~ 새벽 5시 (폰이꺼진경우: 마감, 랜덤 휴무)</span></span>
+            </div>
+            <div class="shop-card-price">130,000원~</div>
+            <p class="shop-card-greeting">강릉마사지 최고의 서비스를 보장하는 더바디 입니다. 최고의 관리사분들의 섬세한 손길로 직접경험해 보세요. 교동 금호빌딩 인근에 위치한 스웨디시 전문샵으로 전원 한국인 여 쌤들, 20대~30대 &amp; 힐링샵, 상기 종목 테라피 과정을 수료한 전문 관리사들이 서비스합니다.</p>
+            
+              <div class="shop-card-tags">
+                <span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">로미로미</span><span class="shop-card-tag">림프관리</span>
+              </div>
+            
+            <div class="shop-card-footer">
+              <span class="shop-card-link">
+                상세 보기
+                <span>↗</span>
+              </span>
+            </div>
+          </div>
+        </a>
+      </article>
+
+      <article class="shop-card">
+        <a href="detail.html?id=gangwon_gangneung_honey_outcall_001" aria-label="허니 상세보기">
+          <div class="shop-card-image">
+            <img src="images/강릉마사지_허니.jpg" alt="허니 마사지샵" loading="lazy" />
+            
+          </div>
+          <div class="shop-card-body">
+            <div class="shop-card-header">
+              <h2 class="shop-card-title">허니</h2>
+              <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+            </div>
+            <div class="shop-card-meta">
+              <span>📍 <span>강원 강릉</span></span>
+              <span>⏱ <span>오후 6시 ~ 아침 7시 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+            </div>
+            <div class="shop-card-price">70,000원~</div>
+            <p class="shop-card-greeting">강릉출장마사지 최고의 서비스를 보장하는 허니 입니다. 스트레스가 쌓인 몸을 꼼꼼하고 세심하게 관리해 드립니다. 사람들 마다 체형이 다르고 근육 결이 다르기 때문에 고객님의 체형, 컨디션에 따라 맞춤 테라피로 오직 초심을 잃지않는 열정으로 보답드리겠습니다. 강릉, 동해, 양양, 평창 전지역에서 타이마사지, 아로마마사지 등 다양한 프로그램으로 최상의 힐링을 제공합니다.</p>
+            
+              <div class="shop-card-tags">
+                <span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span>
+              </div>
+            
+            <div class="shop-card-footer">
+              <span class="shop-card-link">
+                상세 보기
+                <span>↗</span>
+              </span>
+            </div>
+          </div>
+        </a>
+      </article>
+
+      <article class="shop-card">
+        <a href="detail.html?id=gangwon_wonju_dangyedong_theking_swedish_001" aria-label="더 킹 스웨디시 상세보기">
+          <div class="shop-card-image">
+            <img src="images/원주마사지_더킹스웨디시.jpg" alt="더 킹 스웨디시 마사지샵" loading="lazy" />
+            
+          </div>
+          <div class="shop-card-body">
+            <div class="shop-card-header">
+              <h2 class="shop-card-title">더 킹 스웨디시</h2>
+              <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+            </div>
+            <div class="shop-card-meta">
+              <span>📍 <span>강원 원주</span></span>
+              <span>⏱ <span>오전 10시 ~ 새벽 4시 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+            </div>
+            <div class="shop-card-price">120,000원~</div>
+            <p class="shop-card-greeting">원주 시외버스 터미널 인근에 위치한 더 킹 스웨디시입니다. 전원 한국인 미모 여관리사들이 상기 관련 종목을 수료한 전문가들로 구성되어 있으며, 스웨디시, 로미로미, 림프관리를 한번에 받을 수 있는 프로그램으로 최상의 힐링을 제공합니다. 단계동 타임시티 주차장을 이용하실 수 있어 접근성이 좋습니다.</p>
+            
+              <div class="shop-card-tags">
+                <span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">로미로미</span><span class="shop-card-tag">림프관리</span>
+              </div>
+            
+            <div class="shop-card-footer">
+              <span class="shop-card-link">
+                상세 보기
+                <span>↗</span>
+              </span>
+            </div>
+          </div>
+        </a>
+      </article>
+
+      <article class="shop-card">
+        <a href="detail.html?id=gangwon_wonju_goodthai_outcall_001" aria-label="굿타이 상세보기">
+          <div class="shop-card-image">
+            <img src="images/원주홈타이_굿타이.jpg" alt="굿타이 마사지샵" loading="lazy" />
+            
+          </div>
+          <div class="shop-card-body">
+            <div class="shop-card-header">
+              <h2 class="shop-card-title">굿타이</h2>
+              <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+            </div>
+            <div class="shop-card-meta">
+              <span>📍 <span>강원 원주</span></span>
+              <span>⏱ <span>저녁 6시 ~ 아침 6시 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+            </div>
+            <div class="shop-card-price">90,000원~ (기존가 100,000원)</div>
+            <p class="shop-card-greeting">홈케어 최고의 서비스를 보장하는 굿타이 입니다. 어디든지 방문하여 최상의 힐링을 한분 한분 정성을 다해 선사해드리겠습니다. 강원도 출장마사지 (원주,횡성 문막 등 전지역)에서 타이마사지, 아로마마사지, VIP 코스 등 다양한 프로그램으로 최상의 힐링을 제공합니다. 전원 실력파 여 쌤들로 구성되어 있으며, 20대,30대 &amp; 힐링샵으로 상기 종목 테라피 과정을 수료한 전문 관리사들이 서비스합니다.</p>
+            
+              <div class="shop-card-tags">
+                <span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span>
+              </div>
+            
+            <div class="shop-card-footer">
+              <span class="shop-card-link">
+                상세 보기
+                <span>↗</span>
+              </span>
+            </div>
+          </div>
+        </a>
+      </article>
+            <!--INDEX_SHOP_CARDS_END-->
+          </div>
           <p id="noResultsMessage" class="no-results" hidden>
             조건에 맞는 업체가 없습니다. 필터를 다시 선택해보세요.
           </p>
@@ -134,6 +524,7 @@
           </p>
         </div>
       </section>
+      </div>
 
       <section class="seo-section">
         <div class="container seo-inner">

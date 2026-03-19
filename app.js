@@ -5,6 +5,38 @@ function getPageType() {
   return attr || 'index';
 }
 
+function isHomeOrDistrictListPage() {
+  const p = getPageType();
+  return p === 'index' || p === 'district-static';
+}
+
+/** 시·군 정적 페이지(districts/) → 같은 폴더의 다른 시·군 HTML */
+function districtListTargetHref(fileName) {
+  return getPageType() === 'district-static'
+    ? encodeURI(fileName)
+    : `districts/${encodeURI(fileName)}`;
+}
+
+function boardListHref() {
+  return getPageType() === 'district-static' ? '../board.html' : 'board.html';
+}
+
+function resolveListPageImageSrc(src) {
+  if (!src) return src;
+  const s = String(src).trim();
+  if (/^https?:\/\//i.test(s) || /^data:/i.test(s)) return s;
+  if (getPageType() !== 'district-static') return s;
+  if (s.startsWith('/')) return `..${s}`;
+  if (s.startsWith('../')) return s;
+  return `../${s}`;
+}
+
+function listPageDetailHref(idOrName) {
+  const q = encodeURIComponent(idOrName || '');
+  const prefix = getPageType() === 'district-static' ? '../' : '';
+  return `${prefix}detail.html?id=${q}`;
+}
+
 function getQueryParam(name) {
   if (typeof window === 'undefined') return null;
   const url = new URL(window.location.href);
@@ -34,13 +66,33 @@ function parseMultiValue(val) {
     .filter(Boolean);
 }
 
+function normalizeRegionDisplay(region) {
+  const r = (region || '').trim();
+  // 표시만 간단히: "강원도" -> "강원", "경기도" -> "경기" 같은 형태
+  if (r.endsWith('도') && r.length >= 2) return r.slice(0, -1);
+  return r;
+}
+
+// 내부 필터 매핑용 region key
+// - "강원도" / "강원" 같은 값을 동일 키로 취급하기 위함
+function normalizeRegionKey(region) {
+  return normalizeRegionDisplay(region);
+}
+
+function formatLocationDisplay(shop) {
+  const region = parseMultiValue(shop.region).map(normalizeRegionDisplay).join(' ');
+  const district = parseMultiValue(shop.district).join(' ');
+  const dong = parseMultiValue(shop.dong).join(' ');
+  return [region, district, dong].filter(Boolean).join(' ');
+}
+
 function buildFiltersFromData(shops) {
   const regions = new Set();
   const districtsByRegion = {};
   const dongsByRegionDistrict = {};
 
   shops.forEach((shop) => {
-    const regionStrs = parseMultiValue(shop.region);
+    const regionStrs = parseMultiValue(shop.region).map(normalizeRegionKey);
     const districtStrs = parseMultiValue(shop.district);
     const dongStrs = parseMultiValue(shop.dong);
 
@@ -82,7 +134,12 @@ function populateSelect(select, items, placeholder) {
   items.forEach((item) => {
     const o = document.createElement('option');
     o.value = item;
-    o.textContent = item;
+    // region 값은 내부 key(예: "강원")로 통일되어 있으므로 표시도 동일하게 사용
+    if (select.id === 'filterRegion' || select.id === 'filterRegionBoard') {
+      o.textContent = normalizeRegionDisplay(item);
+    } else {
+      o.textContent = item;
+    }
     select.appendChild(o);
   });
 
@@ -104,8 +161,9 @@ function filterShops({
 
   return shops.filter((shop) => {
     if (region) {
-      const shopRegions = parseMultiValue(shop.region);
-      if (!shopRegions.length || !shopRegions.includes(region)) return false;
+      const wantRegion = normalizeRegionDisplay(region);
+      const shopRegions = parseMultiValue(shop.region).map(normalizeRegionDisplay);
+      if (!shopRegions.length || !shopRegions.includes(wantRegion)) return false;
     }
     if (district) {
       const shopDistricts = parseMultiValue(shop.district);
@@ -181,6 +239,48 @@ function renderMainCards() {
     noResults.hidden = data.length > 0;
   }
 
+  const kwTrim = (keyword || '').trim();
+  const isDefaultHomeView =
+    normalizeRegionDisplay(region) === '강원' &&
+    !district &&
+    !dong &&
+    !type &&
+    !kwTrim;
+
+  const ssrCardCount = container.querySelectorAll('.shop-card').length;
+  if (
+    container.dataset.ssrBuiltFor === '강원' &&
+    isDefaultHomeView &&
+    ssrCardCount > 0 &&
+    ssrCardCount === data.length
+  ) {
+    if (noResults) noResults.hidden = ssrCardCount > 0;
+    return;
+  }
+
+  const staticDistrict = document.body.getAttribute('data-district') || '';
+  const isDefaultDistrictView =
+    getPageType() === 'district-static' &&
+    staticDistrict &&
+    normalizeRegionDisplay(region) === '강원' &&
+    district === staticDistrict &&
+    !dong &&
+    !type &&
+    !kwTrim;
+
+  if (
+    container.dataset.ssrDistrict === staticDistrict &&
+    isDefaultDistrictView &&
+    ssrCardCount > 0 &&
+    ssrCardCount === data.length
+  ) {
+    if (noResults) noResults.hidden = ssrCardCount > 0;
+    return;
+  }
+
+  container.removeAttribute('data-ssr-built-for');
+  container.removeAttribute('data-ssr-district');
+
   // showHealingShop 있으면 상단, 없으면 그대로
   const healing = data.filter((s) => s.showHealingShop);
   const others = data.filter((s) => !s.showHealingShop);
@@ -198,10 +298,13 @@ function renderMainCards() {
     const card = document.createElement('article');
     card.className = 'shop-card';
 
-    const imgSrc = shop.image || 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=250&fit=crop&crop=center';
+    const imgSrcRaw =
+      shop.image ||
+      'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=250&fit=crop&crop=center';
+    const imgSrc = resolveListPageImageSrc(imgSrcRaw);
     const alt = shop.alt || `${shop.name} 마사지샵`;
 
-    const location = [shop.region, shop.district, shop.dong].filter(Boolean).join(' ');
+    const location = formatLocationDisplay(shop);
 
     const greeting = shop.greeting || shop.description || '';
     const tags = safeArray(shop.services).slice(0, 3);
@@ -209,7 +312,7 @@ function renderMainCards() {
     const rating = shop.rating || shop.rating === 0 ? shop.rating.toFixed(1) : null;
     const reviewCount = shop.reviewCount || 0;
 
-    const detailUrl = `detail.html?id=${encodeURIComponent(shop.id || shop.name || '')}`;
+    const detailUrl = listPageDetailHref(shop.id || shop.name || '');
 
     card.innerHTML = `
       <a href="${detailUrl}" aria-label="${shop.name} 상세보기">
@@ -338,7 +441,7 @@ function renderBoardList() {
     const card = document.createElement('article');
     card.className = 'board-card';
 
-    const location = formatAddress(shop);
+    const location = formatLocationDisplay(shop);
     const typeLabel = shop.type || safeArray(shop.tags)[0] || '출장마사지';
     const rating =
       typeof shop.rating === 'number' ? shop.rating.toFixed(1) : null;
@@ -524,32 +627,29 @@ function renderDetailPage() {
                 return `
                   <div class="detail-course-card">
                     <div class="detail-course-title">${course.category || '프로그램'}</div>
+                    <div class="detail-course-head" aria-hidden="true">
+                      <span>코스</span>
+                      <span>시간</span>
+                      <span>가격</span>
+                    </div>
                     ${items
                       .map(
-                        (item) => `
+                        (item) => {
+                          const desc =
+                            item.description && String(item.description).trim()
+                              ? `<div class="detail-course-desc">${item.description}</div>`
+                              : '';
+                          return `
                           <div class="detail-course-item">
-                            <div class="detail-course-label">
-                              ${item.name || ''}
-                              ${
-                                item.description
-                                  ? `<div>${item.description}</div>`
-                                  : ''
-                              }
+                            <div class="detail-course-main">
+                              <span class="detail-course-name">${item.name || ''}</span>
+                              <span class="detail-course-time">${item.duration || ''}</span>
+                              <span class="detail-course-price">${item.price || ''}</span>
                             </div>
-                            <div class="detail-course-meta">
-                              ${
-                                item.price
-                                  ? `<div>${item.price}</div>`
-                                  : ''
-                              }
-                              ${
-                                item.duration
-                                  ? `<div>${item.duration}</div>`
-                                  : ''
-                              }
-                            </div>
+                            ${desc}
                           </div>
-                        `
+                        `;
+                        }
                       )
                       .join('')}
                   </div>
@@ -703,6 +803,32 @@ function initFilterUI() {
   const { regions, districtsByRegion, dongsByRegionDistrict } =
     buildFiltersFromData(shops);
 
+  // shops.json에 업체가 없어도, 강원도 시/군 드롭다운이 "전부" 보이도록 고정 보정
+  const KANGWON_DISTRICTS = [
+    '춘천',
+    '원주',
+    '강릉',
+    '동해',
+    '태백',
+    '속초',
+    '삼척',
+    '홍천',
+    '횡성',
+    '영월',
+    '평창',
+    '정선',
+    '철원',
+    '화천',
+    '양구',
+    '고성',
+    '양양',
+  ];
+
+  if (regions.has('강원')) {
+    if (!districtsByRegion['강원']) districtsByRegion['강원'] = new Set();
+    KANGWON_DISTRICTS.forEach((d) => districtsByRegion['강원'].add(d));
+  }
+
   const regionSelects = [
     document.getElementById('filterRegion'),
     document.getElementById('filterRegionBoard'),
@@ -747,15 +873,60 @@ function initFilterUI() {
     sel.addEventListener('change', () => {
       const val = sel.value;
       updateDependent(val, '', idx);
-      getPageType() === 'index' ? renderMainCards() : renderBoardList();
+      isHomeOrDistrictListPage() ? renderMainCards() : renderBoardList();
     });
   });
+
+  // 홈(index): ?region= 이 있으면 해당 지역, 없으면 기본 강원 (로고/메인 링크는 index.html?region=강원 권장)
+  if (getPageType() === 'index') {
+    const regionSel = regionSelects[0];
+    if (regionSel) {
+      const params = new URLSearchParams(window.location.search);
+      const rp = params.get('region');
+      let want = rp ? normalizeRegionDisplay(rp) : '강원';
+      if (!Array.from(regionSel.options).some((o) => o.value === want)) {
+        want = '강원';
+      }
+      if (Array.from(regionSel.options).some((o) => o.value === want)) {
+        regionSel.value = want;
+        regionSel.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    }
+  }
 
   districtSelects.forEach((sel, idx) => {
     if (!sel) return;
     sel.addEventListener('change', () => {
       const regionVal = regionSelects[idx]?.value || '';
       const districtVal = sel.value || '';
+
+      // 홈에서 강원 시/군만 선택한 경우 → 정적 시/군 페이지로 즉시 이동
+      if (
+        isHomeOrDistrictListPage() &&
+        sel.id === 'filterDistrict' &&
+        normalizeRegionDisplay(regionVal) === '강원' &&
+        districtVal
+      ) {
+        const dongVal = document.getElementById('filterDong')?.value || '';
+        const typeVal = document.getElementById('filterType')?.value || '';
+        const kwVal =
+          (document.getElementById('filterKeyword')?.value || '').trim();
+        if (!dongVal && !typeVal && !kwVal) {
+          const fileName = `${districtVal}출장마사지.html`;
+          const onDistrict = document.body.getAttribute('data-district');
+          if (
+            getPageType() === 'district-static' &&
+            onDistrict &&
+            onDistrict === districtVal
+          ) {
+            /* 이미 이 시·군 정적 페이지 — 리다이렉트 없이 동·필터만 갱신 */
+          } else {
+            window.location.href = districtListTargetHref(fileName);
+            return;
+          }
+        }
+      }
+
       const key = regionVal && districtVal ? `${regionVal}::${districtVal}` : '';
       const dongs =
         (key && dongsByRegionDistrict[key]) || new Set();
@@ -766,14 +937,14 @@ function initFilterUI() {
           populateSelect(d, Array.from(dongs).sort(), '전체')
         );
       }
-      getPageType() === 'index' ? renderMainCards() : renderBoardList();
+      isHomeOrDistrictListPage() ? renderMainCards() : renderBoardList();
     });
   });
 
   dongSelects.forEach((sel) => {
     if (!sel) return;
     sel.addEventListener('change', () => {
-      getPageType() === 'index' ? renderMainCards() : renderBoardList();
+      isHomeOrDistrictListPage() ? renderMainCards() : renderBoardList();
     });
   });
 
@@ -784,7 +955,7 @@ function initFilterUI() {
   typeSelects.forEach((sel) => {
     if (!sel) return;
     sel.addEventListener('change', () => {
-      getPageType() === 'index' ? renderMainCards() : renderBoardList();
+      isHomeOrDistrictListPage() ? renderMainCards() : renderBoardList();
     });
   });
 
@@ -793,9 +964,29 @@ function initFilterUI() {
   [kwInput, kwBoard].forEach((el) => {
     if (!el) return;
     el.addEventListener('input', () => {
-      getPageType() === 'index' ? renderMainCards() : renderBoardList();
+      isHomeOrDistrictListPage() ? renderMainCards() : renderBoardList();
     });
   });
+
+  // 시·군 정적 페이지: 기본 필터 강원 + 해당 시·군 (리스너 등록 후 실행)
+  if (getPageType() === 'district-static') {
+    const staticDistrict = document.body.getAttribute('data-district');
+    const regionSel = regionSelects[0];
+    if (regionSel && staticDistrict) {
+      if (Array.from(regionSel.options).some((o) => o.value === '강원')) {
+        regionSel.value = '강원';
+      }
+      regionSel.dispatchEvent(new Event('change', { bubbles: true }));
+      const distSel = document.getElementById('filterDistrict');
+      if (
+        distSel &&
+        Array.from(distSel.options).some((o) => o.value === staticDistrict)
+      ) {
+        distSel.value = staticDistrict;
+      }
+      distSel?.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
 }
 
 // 이벤트 바인딩
@@ -811,9 +1002,32 @@ function initForms() {
       const dong = document.getElementById('filterDong')?.value || '';
       const type = document.getElementById('filterType')?.value || '';
       const keyword =
-        document.getElementById('filterKeyword')?.value || '';
+        (document.getElementById('filterKeyword')?.value || '').trim();
 
-      const url = new URL(window.location.origin + '/board.html');
+      // 홈에서 강원 시/군만 선택한 경우 → 정적 시/군 페이지로 바로 이동
+      if (
+        normalizeRegionDisplay(region) === '강원' &&
+        district &&
+        !dong &&
+        !type &&
+        !keyword
+      ) {
+        const onDistrict = document.body.getAttribute('data-district');
+        if (
+          getPageType() === 'district-static' &&
+          onDistrict &&
+          onDistrict === district
+        ) {
+          renderMainCards();
+          return;
+        }
+        const fileName = `${district}출장마사지.html`;
+        window.location.href = districtListTargetHref(fileName);
+        return;
+      }
+
+      // GitHub Pages(서브패스)에서도 안전하게 상대경로 사용
+      const url = new URL(boardListHref(), window.location.href);
       if (region) url.searchParams.set('region', region);
       if (district) url.searchParams.set('district', district);
       if (dong) url.searchParams.set('dong', dong);
@@ -843,7 +1057,7 @@ function initForms() {
 function applyQueryParamsToBoardFilters() {
   if (getPageType() !== 'board') return;
   const params = new URLSearchParams(window.location.search);
-  const region = params.get('region') || '';
+  const region = normalizeRegionDisplay(params.get('region') || '');
   const district = params.get('district') || '';
   const dong = params.get('dong') || '';
   const type = params.get('type') || '';
@@ -886,7 +1100,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initForms();
 
   const page = getPageType();
-  if (page === 'index') {
+  if (page === 'index' || page === 'district-static') {
     renderMainCards();
   } else if (page === 'board') {
     applyQueryParamsToBoardFilters();

@@ -420,6 +420,70 @@ select:focus {
   font-size: 0.9rem;
 }
 
+/*
+ * 시/군 정적 페이지: 홈 index 의 모바일(≤720px) 업체 카드와 동일한 레이아웃·타이포
+ * (뷰포트 너비와 무관하게 동일하게 보이게 함)
+ */
+body[data-page='district-static'] .cards-grid {
+  grid-template-columns: 1fr;
+}
+
+body[data-page='district-static'] .shop-card-link,
+body[data-page='district-static'] .shop-card-footer {
+  display: none;
+}
+
+body[data-page='district-static'] .shop-card > a {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 0;
+}
+
+body[data-page='district-static'] .shop-card-image {
+  flex-shrink: 0;
+  width: 88px;
+  min-width: 88px;
+  aspect-ratio: 1;
+}
+
+body[data-page='district-static'] .shop-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body[data-page='district-static'] .shop-card-body {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.7rem 0.55rem 0.6rem;
+}
+
+body[data-page='district-static'] .shop-card-rating {
+  display: none;
+}
+
+body[data-page='district-static'] .shop-card-tags {
+  display: none;
+}
+
+body[data-page='district-static'] .shop-card-greeting {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+}
+
+body[data-page='district-static'] .shop-card-meta {
+  font-size: 0.72rem;
+}
+
+body[data-page='district-static'] .shop-card-price {
+  font-size: 0.82rem;
+  margin-top: 0.1rem;
+}
+
 .no-results {
   margin-top: 1.2rem;
   font-size: 0.9rem;
@@ -465,6 +529,11 @@ select:focus {
 
 .footer-link:hover {
   color: #e5e7eb;
+}
+
+.site-footer a.footer-link[href$='robots.txt'],
+.site-footer a.footer-link[href$='sitemap.xml'] {
+  display: none;
 }
 
 .board-filters {
@@ -653,10 +722,7 @@ select:focus {
 }
 
 .detail-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.3rem;
+  display: none;
 }
 
 .detail-badge {
@@ -670,11 +736,12 @@ select:focus {
 
 .detail-courses {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 0.8rem;
 }
 
 .detail-course-card {
+  --course-cols: minmax(0, 1.35fr) minmax(4rem, auto) minmax(5.25rem, max-content);
   border-radius: 12px;
   border: 1px solid rgba(55, 65, 81, 0.9);
   padding: 0.75rem 0.8rem;
@@ -684,50 +751,112 @@ select:focus {
 
 .detail-course-title {
   font-weight: 600;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.45rem;
   color: #e5e7eb;
 }
 
+.detail-course-head {
+  display: grid;
+  grid-template-columns: var(--course-cols);
+  gap: 0.45rem 0.75rem;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7280;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.15rem;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.85);
+}
+
+.detail-course-head span:nth-child(2) {
+  text-align: center;
+}
+
+.detail-course-head span:nth-child(3) {
+  text-align: right;
+}
+
 .detail-course-item {
-  margin-top: 0.3rem;
-  padding: 0.45rem 0;
+  padding: 0.55rem 0;
   border-top: 1px solid rgba(31, 41, 55, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.detail-course-head + .detail-course-item {
+  border-top: none;
+  padding-top: 0.35rem;
 }
 
 .detail-course-main {
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--course-cols);
+  gap: 0.45rem 0.75rem;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
 }
 
 .detail-course-name {
   font-weight: 600;
   color: #e5e7eb;
+  min-width: 0;
+  word-break: break-word;
 }
 
 .detail-course-time {
   font-size: 0.82rem;
-  color: var(--color-text-muted);
+  color: #9ca3af;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .detail-course-price {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: #ff4b82;
   font-weight: 700;
   letter-spacing: 0.01em;
-  min-width: 5.5rem;
   text-align: right;
+  white-space: nowrap;
 }
 
 .detail-course-desc {
-  margin-top: 0.25rem;
-  font-size: 0.8rem;
+  margin: 0;
+  font-size: 0.78rem;
   color: var(--color-text-muted);
-  line-height: 1.4;
-  padding: 0.4rem 0.55rem;
+  line-height: 1.45;
+  padding: 0.45rem 0.6rem;
   border-radius: 8px;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(31, 41, 55, 0.9);
+}
+
+@media (max-width: 360px) {
+  .detail-course-card {
+    --course-cols: minmax(0, 1fr);
+  }
+
+  .detail-course-head {
+    display: none;
+  }
+
+  .detail-course-head + .detail-course-item {
+    border-top: 1px solid rgba(31, 41, 55, 0.9);
+    padding-top: 0.55rem;
+  }
+
+  .detail-course-main {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .detail-course-head span:nth-child(2),
+  .detail-course-head span:nth-child(3),
+  .detail-course-time,
+  .detail-course-price {
+    text-align: left;
+  }
 }
 
 .detail-reviews {
@@ -851,8 +980,48 @@ select:focus {
     padding: 0.6rem 0;
   }
 
-  .hero {
+  /* 모바일: 검색 폼 → 업체 카드 → 히어로 문구(hero-text) 순 */
+  .home-top {
+    display: flex;
+    flex-direction: column;
     padding-top: 1.9rem;
+  }
+
+  .home-top > .hero,
+  .home-top .hero > .container.hero-inner {
+    display: contents;
+  }
+
+  .home-top .hero-text,
+  .home-top .hero-search {
+    width: 100%;
+    max-width: 1120px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    box-sizing: border-box;
+  }
+
+  .home-top .hero-search {
+    order: 1;
+    margin-bottom: 0.85rem;
+  }
+
+  .home-top > .cards-section {
+    order: 2;
+    width: 100%;
+  }
+
+  .home-top .hero-text {
+    order: 3;
+    margin-top: 1.1rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .hero {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .hero-search,
