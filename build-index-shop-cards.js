@@ -61,22 +61,96 @@ function safeArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
-function filterShops({ shops, region, district, dong, type, keyword }) {
-  const kw = (keyword || '').trim().toLowerCase();
+function getKnownRegionNamesSetForBuild() {
+  try {
+    const p = path.join(ROOT, 'korea-regions.json');
+    const j = JSON.parse(fs.readFileSync(p, 'utf8'));
+    if (j.regions) {
+      return new Set(j.regions.map((r) => normalizeRegionDisplay(r.name)));
+    }
+  } catch (_) {
+    /* ignore */
+  }
+  return new Set([
+    '서울',
+    '부산',
+    '대구',
+    '인천',
+    '광주',
+    '대전',
+    '울산',
+    '세종',
+    '경기',
+    '강원',
+    '충북',
+    '충남',
+    '전북',
+    '전남',
+    '경북',
+    '경남',
+    '제주',
+  ]);
+}
+
+function parseKeywordRegionsAndRestBuild(keyword) {
+  const raw = (keyword || '').trim();
+  if (!raw) return { regions: [], rest: '' };
+  const known = getKnownRegionNamesSetForBuild();
+  const parts = raw.split(/[,，;；]+/).map((s) => s.trim()).filter(Boolean);
+  const regionList = [];
+  const restParts = [];
+  for (const p of parts) {
+    const n = normalizeRegionDisplay(p);
+    if (known.has(n)) regionList.push(n);
+    else restParts.push(p);
+  }
+  const uniqRegions = [...new Set(regionList)];
+  let rest = restParts.join(' ').trim().toLowerCase();
+  if (!uniqRegions.length && !rest && !/[，,;；]/.test(raw)) {
+    const whole = normalizeRegionDisplay(raw);
+    if (known.has(whole)) {
+      return { regions: [whole], rest: '' };
+    }
+  }
+  return { regions: uniqRegions, rest };
+}
+
+/** app.js filterShops 와 동일 (SSR는 pageType=index → 지역만 적용) */
+function filterShops({ shops, region, district, dong, type, keyword, pageType }) {
+  const page = pageType || 'index';
+  const { regions: kwRegions, rest: kwRest } = parseKeywordRegionsAndRestBuild(keyword);
+  const kw = kwRest;
+
+  const regionPriorityListing =
+    (page === 'index' ||
+      page === 'region-static' ||
+      page === 'board' ||
+      page === 'district-static') &&
+    Boolean((region || '').trim());
+
+  const skipDistrictDongBecauseKeywordRegions = kwRegions.length > 0;
+  const skipDistrictDong =
+    skipDistrictDongBecauseKeywordRegions || regionPriorityListing;
+
   return shops.filter((shop) => {
-    if (region) {
+    const shopRegions = parseMultiValue(shop.region).map(normalizeRegionDisplay);
+
+    if (kwRegions.length > 0) {
+      if (!shopRegions.some((r) => kwRegions.includes(r))) return false;
+    } else if (region) {
       const wantRegion = normalizeRegionDisplay(region);
-      const shopRegions = parseMultiValue(shop.region).map(normalizeRegionDisplay);
       if (!shopRegions.length || !shopRegions.includes(wantRegion)) return false;
     }
-    if (district) {
+
+    if (!skipDistrictDong && district) {
       const shopDistricts = parseMultiValue(shop.district);
       if (!shopDistricts.length || !shopDistricts.includes(district)) return false;
     }
-    if (dong) {
+    if (!skipDistrictDong && dong) {
       const shopDongs = parseMultiValue(shop.dong);
       if (!shopDongs.length || !shopDongs.includes(dong)) return false;
     }
+
     if (type) {
       const typeLower = type.toLowerCase();
       const inType =
@@ -85,6 +159,7 @@ function filterShops({ shops, region, district, dong, type, keyword }) {
         safeArray(shop.tags).join(' ').toLowerCase().includes(typeLower);
       if (!inType) return false;
     }
+
     if (kw) {
       const combined = [
         shop.name,
@@ -116,6 +191,22 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function shopPhoneDigitsForTel(phone) {
+  return String(phone || '').replace(/[^\d]/g, '');
+}
+
+/** app.js shopCardPriceRowHtml 과 동일 (정적 HTML 소스에 전화 노출) */
+function shopCardPriceRowHtml(shop) {
+  const priceStr = escapeHtml(formatPrice(shop.price));
+  const phoneRaw = String(shop.phone || '').trim();
+  const digits = shopPhoneDigitsForTel(phoneRaw);
+  if (!phoneRaw) {
+    return `<div class="shop-card-price-row"><div class="shop-card-price">${priceStr}</div></div>`;
+  }
+  const dt = digits ? ` data-tel="${escapeHtml(digits)}"` : '';
+  return `<div class="shop-card-price-row"><div class="shop-card-price">${priceStr}</div><span class="shop-card-phone"${dt}>📞 ${escapeHtml(phoneRaw)}</span></div>`;
 }
 
 function renderOneCard(shop) {
@@ -169,7 +260,7 @@ function renderOneCard(shop) {
                   : ''
               }
             </div>
-            <div class="shop-card-price">${escapeHtml(formatPrice(shop.price))}</div>
+            ${shopCardPriceRowHtml(shop)}
             ${
               greeting
                 ? `<p class="shop-card-greeting">${escapeHtml(greeting)}</p>`

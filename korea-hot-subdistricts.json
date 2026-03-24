@@ -1,0 +1,346 @@
+{
+  "description": "주요 상권/생활권 기준 읍/면/동/리 검색 키워드용 데이터 (시/도 + 시/군/구 + 주요 동 이름들, 실제 검색에서 많이 쓰이는 형태 위주)",
+  "regions": [
+    {
+      "region": "서울",
+      "cities": [
+        {
+          "district": "강남",
+          "subdistricts": ["역삼", "논현", "신사", "압구정", "청담", "삼성", "대치", "개포"]
+        },
+        {
+          "district": "서초",
+          "subdistricts": ["서초", "방배", "잠원", "반포"]
+        },
+        {
+          "district": "송파",
+          "subdistricts": ["잠실", "잠실본", "문정", "가락", "방이", "석촌", "풍납"]
+        },
+        {
+          "district": "마포",
+          "subdistricts": ["서교", "동교", "합정", "상수", "망원", "연남"]
+        },
+        {
+          "district": "종로",
+          "subdistricts": ["종로1가", "종로2가", "종로3가", "인사동", "삼청", "청운", "부암"]
+        },
+        {
+          "district": "중구",
+          "subdistricts": ["명동", "충무로", "을지로", "소공", "신당", "황학"]
+        },
+        {
+          "district": "용산",
+          "subdistricts": ["이태원", "한남", "동빙고", "보광", "원효로"]
+        },
+        {
+          "district": "영등포",
+          "subdistricts": ["영등포", "여의도", "문래", "당산"]
+        },
+        {
+          "district": "구로",
+          "subdistricts": ["구로", "고척", "개봉", "오류"]
+        },
+        {
+          "district": "금천",
+          "subdistricts": ["가산", "독산", "시흥"]
+        },
+        {
+          "district": "관악",
+          "subdistricts": ["신림", "봉천"]
+        },
+        {
+          "district": "동작",
+          "subdistricts": ["노량진", "상도", "사당"]
+        }
+      ]
+    },
+    {
+      "region": "부산",
+      "cities": [
+        {
+          "district": "해운대",
+          "subdistricts": ["중동", "좌동", "우동", "송정"]
+        },
+        {
+          "district": "수영",
+          "subdistricts": ["광안", "남천", "민락"]
+        },
+        {
+          "district": "부산진",
+          "subdistricts": ["서면", "부전", "전포", "가야", "범천"]
+        },
+        {
+          "district": "동래",
+          "subdistricts": ["명륜", "온천", "사직"]
+        },
+        {
+          "district": "남구",
+          "subdistricts": ["대연", "문현", "용호"]
+        },
+        {
+          "district": "중구",
+          "subdistricts": ["광복", "남포", "동광"]
+        }
+      ]
+    },
+    {
+      "region": "인천",
+      "cities": [
+        {
+          "district": "연수",
+          "subdistricts": ["송도", "연수"]
+        },
+        {
+          "district": "남동",
+          "subdistricts": ["구월", "논현"]
+        },
+        {
+          "district": "부평",
+          "subdistricts": ["부평", "부개", "삼산"]
+        },
+        {
+          "district": "중구",
+          "subdistricts": ["운서", "중산"]
+        }
+      ]
+    },
+    {
+      "region": "대구",
+      "cities": [
+        {
+          "district": "중구",
+          "subdistricts": ["동성로", "삼덕동"]
+        },
+        {
+          "district": "수성",
+          "subdistricts": ["범어", "만촌", "수성동", "두산"]
+        },
+        {
+          "district": "달서",
+          "subdistricts": ["상인", "용산", "두류", "이곡"]
+        }
+      ]
+    },
+    {
+      "region": "광주",
+      "cities": [
+        {
+          "district": "서구",
+          "subdistricts": ["치평", "농성", "풍암", "상무"]
+        },
+        {
+          "district": "동구",
+          "subdistricts": ["충장로", "대인"]
+        }
+      ]
+    },
+    {
+      "region": "대전",
+      "cities": [
+        {
+          "district": "유성",
+          "subdistricts": ["봉명", "궁동", "어은"]
+        },
+        {
+          "district": "서구",
+          "subdistricts": ["둔산", "탄방"]
+        },
+        {
+          "district": "중구",
+          "subdistricts": ["은행동", "문화동"]
+        }
+      ]
+    },
+    {
+      "region": "울산",
+      "cities": [
+        {
+          "district": "남구",
+          "subdistricts": ["삼산", "신정"]
+        },
+        {
+          "district": "중구",
+          "subdistricts": ["성남", "옥교"]
+        }
+      ]
+    },
+    {
+      "region": "경기",
+      "cities": [
+        {
+          "district": "수원",
+          "subdistricts": ["영통", "매탄", "인계", "행궁", "광교"]
+        },
+        {
+          "district": "성남",
+          "subdistricts": ["정자", "서현", "야탑", "수내", "이매", "금곡", "판교"]
+        },
+        {
+          "district": "고양",
+          "subdistricts": ["일산동", "주엽", "백석", "마두"]
+        },
+        {
+          "district": "부천",
+          "subdistricts": ["상동", "중동", "송내", "소사본"]
+        },
+        {
+          "district": "안양",
+          "subdistricts": ["평촌", "비산", "호계"]
+        },
+        {
+          "district": "안산",
+          "subdistricts": ["고잔", "중앙", "상록수"]
+        },
+        {
+          "district": "평택",
+          "subdistricts": ["비전", "소사", "송탄"]
+        },
+        {
+          "district": "의정부",
+          "subdistricts": ["가능", "의정부"]
+        },
+        {
+          "district": "용인",
+          "subdistricts": ["수지", "죽전", "보정", "동백"]
+        }
+      ]
+    },
+    {
+      "region": "제주",
+      "cities": [
+        {
+          "district": "제주",
+          "subdistricts": ["연동", "노형", "이도", "삼도", "애월", "구좌", "조천"]
+        },
+        {
+          "district": "서귀포",
+          "subdistricts": ["중문", "서귀", "대포", "성산", "표선", "안덕"]
+        }
+      ]
+    },
+    {
+      "region": "강원",
+      "cities": [
+        {
+          "district": "강릉",
+          "subdistricts": ["경포", "포남", "교동", "옥계", "안목"]
+        },
+        {
+          "district": "속초",
+          "subdistricts": ["조양", "교동", "청호", "금호"]
+        },
+        {
+          "district": "춘천",
+          "subdistricts": ["퇴계", "석사", "온의", "명동"]
+        },
+        {
+          "district": "동해",
+          "subdistricts": ["천곡", "묵호", "북삼"]
+        },
+        {
+          "district": "양양",
+          "subdistricts": ["양양", "강현", "서면"]
+        },
+        {
+          "district": "평창",
+          "subdistricts": ["대관령", "봉평"]
+        }
+      ]
+    },
+    {
+      "region": "충북",
+      "cities": [
+        {
+          "district": "청주",
+          "subdistricts": ["성안", "분평", "용암", "복대"]
+        },
+        {
+          "district": "충주",
+          "subdistricts": ["연수", "호암"]
+        }
+      ]
+    },
+    {
+      "region": "충남",
+      "cities": [
+        {
+          "district": "천안",
+          "subdistricts": ["불당", "두정", "쌍용", "성정"]
+        },
+        {
+          "district": "아산",
+          "subdistricts": ["탕정", "배방"]
+        },
+        {
+          "district": "서산",
+          "subdistricts": ["동문", "예천"]
+        }
+      ]
+    },
+    {
+      "region": "경북",
+      "cities": [
+        {
+          "district": "포항",
+          "subdistricts": ["죽도", "대이", "두호"]
+        },
+        {
+          "district": "경주",
+          "subdistricts": ["황성", "용강"]
+        },
+        {
+          "district": "구미",
+          "subdistricts": ["인동", "도량", "진평"]
+        }
+      ]
+    },
+    {
+      "region": "경남",
+      "cities": [
+        {
+          "district": "창원",
+          "subdistricts": ["상남", "용호", "성산"]
+        },
+        {
+          "district": "김해",
+          "subdistricts": ["삼계", "장유", "외동"]
+        },
+        {
+          "district": "진주",
+          "subdistricts": ["충무공동", "평거", "신안"]
+        }
+      ]
+    },
+    {
+      "region": "전북",
+      "cities": [
+        {
+          "district": "전주",
+          "subdistricts": ["고사", "서신", "효자", "송천"]
+        },
+        {
+          "district": "군산",
+          "subdistricts": ["나운", "수송"]
+        }
+      ]
+    },
+    {
+      "region": "전남",
+      "cities": [
+        {
+          "district": "여수",
+          "subdistricts": ["학동", "웅천", "덕충"]
+        },
+        {
+          "district": "순천",
+          "subdistricts": ["연향", "조례"]
+        },
+        {
+          "district": "목포",
+          "subdistricts": ["하당", "상동"]
+        }
+      ]
+    }
+  ]
+}
+

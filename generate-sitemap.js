@@ -2,7 +2,7 @@
  * generate-sitemap.js
  *
  * sitemap.xml 자동 생성
- * - index.html, board.html, districts/* (시·군 정적 리스트)
+ * - index.html, board.html, regions/*, districts/* (정적 리스트)
  * - detail.html?id=업체ID (실제 서비스와 동일한 동적 상세 URL)
  *
  * shops/*.html 정적 상세는 배포하지 않는 경우가 많아 sitemap에 넣지 않습니다.
@@ -18,29 +18,9 @@ const { SITE_ORIGIN } = require('./site.config.js');
 
 const BASE_URL = SITE_ORIGIN;
 
-// 강원도 17개 시/군(shops.json district 기준: "강릉", "원주" 형태)
-const KANGWON_DISTRICTS = [
-  '춘천',
-  '원주',
-  '강릉',
-  '동해',
-  '태백',
-  '속초',
-  '삼척',
-  '홍천',
-  '횡성',
-  '영월',
-  '평창',
-  '정선',
-  '철원',
-  '화천',
-  '양구',
-  '고성',
-  '양양',
-];
-
 const ROOT_DIR = __dirname;
 const SHOPS_FILE = path.join(ROOT_DIR, 'shops.json');
+const KOREA_REGIONS_FILE = path.join(ROOT_DIR, 'korea-regions.json');
 const SITEMAP_FILE = path.join(ROOT_DIR, 'sitemap.xml');
 
 function loadShopsFromScriptFile(filePath) {
@@ -53,6 +33,22 @@ function loadShopsFromScriptFile(filePath) {
     throw new Error('shops.json 형식이 window.shopsData = { shops: [...] } 가 아닙니다.');
   }
   return data.shops;
+}
+
+function loadRegionsFromJson(filePath) {
+  const raw = fs.readFileSync(filePath, 'utf8');
+  const parsed = JSON.parse(raw);
+  if (!parsed || !Array.isArray(parsed.regions)) return [];
+  return parsed.regions
+    .map((r) => ({
+      name: String((r && r.name) || '').trim(),
+      districts: Array.isArray(r && r.districts) ? r.districts : [],
+    }))
+    .filter((r) => r.name)
+    .map((r) => ({
+      name: r.name.endsWith('도') ? r.name.slice(0, -1) : r.name,
+      districts: r.districts.map((d) => String(d || '').trim()).filter(Boolean),
+    }));
 }
 
 function escapeXmlLoc(url) {
@@ -94,20 +90,21 @@ function main() {
   urls.add(`${BASE_URL}/`);
   urls.add(`${BASE_URL}/index.html`);
   urls.add(`${BASE_URL}/board.html`);
+  const regions = loadRegionsFromJson(KOREA_REGIONS_FILE);
+  regions.forEach((regionObj) => {
+    urls.add(`${BASE_URL}/${encodeURI(`regions/${regionObj.name}출장마사지.html`)}`);
+    regionObj.districts.forEach((district) => {
+      urls.add(
+        `${BASE_URL}/${encodeURI(`districts/${regionObj.name}-${district}출장마사지.html`)}`
+      );
+    });
+  });
 
   shops.forEach((shop) => {
     const id = shop.id || shop.name;
     if (!id) return;
     const encoded = encodeURIComponent(String(id));
     urls.add(`${BASE_URL}/detail.html?id=${encoded}`);
-  });
-
-  // 강원도 시/군 정적 리스트 페이지
-  KANGWON_DISTRICTS.forEach((district) => {
-    const fileName = `${district}출장마사지.html`;
-    // URL 경로 인코딩 (BASE_URL에 포함된 /는 유지)
-    const rel = encodeURI(`districts/${fileName}`);
-    urls.add(`${BASE_URL}/${rel}`);
   });
 
   // URL 정렬(가독성/변경 diff 최소화)

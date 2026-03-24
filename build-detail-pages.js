@@ -67,13 +67,13 @@ function renderDetailHtml(shop, slug) {
     .join(' ')
     .concat(' 출장마사지');
 
-  const title = `${titlePrefix} | 강원도출장마사지`;
+  const title = `${titlePrefix} | 바로힐링출장마사지`;
 
   const descBase =
     (shop.description || '').trim() ||
-    `${regionFirst || ''} ${districtFirst || ''} 지역에서 이용할 수 있는 ${baseName} 강원도출장마사지 정보입니다.`;
+    `${regionFirst || ''} ${districtFirst || ''} 지역에서 이용할 수 있는 ${baseName} 바로힐링출장마사지 정보입니다.`;
 
-  const desc = `${regionFirst || ''} ${districtFirst || ''} 강원도출장마사지 ${baseName} 안내 – ${descBase}`.slice(
+  const desc = `${regionFirst || ''} ${districtFirst || ''} 바로힐링출장마사지 ${baseName} 안내 – ${descBase}`.slice(
     0,
     160
   );
@@ -165,7 +165,7 @@ ${JSON.stringify(ld, null, 2)}
   <body data-page="detail-static">
     <header class="site-header">
       <div class="container header-inner">
-        <a href="../index.html?region=강원" class="logo">강원도출장마사지</a>
+        <a href="../index.html?region=강원" class="logo">바로힐링출장마사지</a>
         <nav class="main-nav">
           <a href="../index.html?region=강원" class="nav-link">메인</a>
           <a href="../board.html" class="nav-link">게시판/검색</a>
@@ -297,7 +297,7 @@ ${JSON.stringify(ld, null, 2)}
 
     <footer class="site-footer">
       <div class="container footer-inner">
-        <p>© <span id="currentYear"></span> 강원도출장마사지. All rights reserved.</p>
+        <p>© <span id="currentYear"></span> 바로힐링출장마사지. All rights reserved.</p>
       </div>
     </footer>
     <script>

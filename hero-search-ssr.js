@@ -163,7 +163,7 @@ ${dongOptions}
                 <input
                   type="search"
                   id="filterKeyword"
-                  placeholder="업체명, 서비스, 태그 검색"
+                  placeholder="업체명·주소·태그 / 서울,경기,인천(쉼표로 여러 지역)"
                 />
               </label>
               <button type="submit" class="btn-primary">검색</button>

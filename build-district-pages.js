@@ -429,7 +429,7 @@ function renderDistrictListPage({ district, shops, year }) {
       return (b.reviewCount || 0) - (a.reviewCount || 0);
     });
 
-  const title = `${district} 출장마사지 | 강원도출장마사지`;
+  const title = `${district} 출장마사지 | 바로힐링출장마사지`;
   const desc = `${district} 출장마사지 업체의 가격, 코스, 영업시간, 주소, 전화번호 정보를 한눈에 비교하세요.`;
 
   // 홈 index.html → app.js renderMainCards() 와 동일 마크업 (detail 경로만 ../ )
@@ -579,7 +579,7 @@ ${JSON.stringify(ld, null, 2)}
   <body data-page="district-static" data-district="${escapeHtml(district)}">
     <header class="site-header">
       <div class="container header-inner">
-        <a href="../index.html?region=강원" class="logo">강원도출장마사지</a>
+        <a href="../index.html?region=강원" class="logo">바로힐링출장마사지</a>
         <nav class="main-nav">
           <a href="../index.html?region=강원" class="nav-link">메인</a>
           <a href="../board.html" class="nav-link">게시판/검색</a>
@@ -638,7 +638,7 @@ ${heroSearchHtml}
 
     <footer class="site-footer">
       <div class="container footer-inner">
-        <p>© ${escapeHtml(year)} 강원도출장마사지. All rights reserved.</p>
+        <p>© ${escapeHtml(year)} 바로힐링출장마사지. All rights reserved.</p>
         <a href="../robots.txt" class="footer-link">robots.txt</a>
         <a href="../sitemap.xml" class="footer-link">sitemap.xml</a>
       </div>
