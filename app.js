@@ -118,9 +118,26 @@ function resolveListPageImageSrc(src) {
 }
 
 function listPageDetailHref(idOrName) {
-  const q = encodeURIComponent(idOrName || '');
   const prefix = isSubdirStaticPage() ? '../' : '';
-  return `${prefix}detail.html?id=${q}`;
+  const slug = shopSlugForStaticDetail(idOrName);
+  return `${prefix}shops/${slug}.html`;
+}
+
+function shopSlugForStaticDetail(shopOrIdOrName) {
+  if (shopOrIdOrName && typeof shopOrIdOrName === 'object') {
+    const shop = shopOrIdOrName;
+    if (shop.slug) return String(shop.slug);
+    const first = (v) => String(v || '').split(',')[0].trim();
+    const region = first(shop.region);
+    const district = first(shop.district);
+    const name = String(shop.name || '').trim();
+    const base = [region, district, name, '출장마사지']
+      .filter(Boolean)
+      .join('-')
+      .replace(/\s+/g, '-');
+    return base || String(shop.id || shop.name || 'detail');
+  }
+  return String(shopOrIdOrName || 'detail');
 }
 
 function getQueryParam(name) {
@@ -591,7 +608,7 @@ function renderMainCards() {
     const rating = shop.rating || shop.rating === 0 ? shop.rating.toFixed(1) : null;
     const reviewCount = shop.reviewCount || 0;
 
-    const detailUrl = listPageDetailHref(shop.id || shop.name || '');
+    const detailUrl = listPageDetailHref(shop);
 
     card.innerHTML = `
       <a href="${detailUrl}" aria-label="${shop.name} 상세보기">
@@ -726,7 +743,7 @@ function renderBoardList() {
       typeof shop.rating === 'number' ? shop.rating.toFixed(1) : null;
     const reviewCount = shop.reviewCount || 0;
 
-    const detailUrl = `detail.html?id=${encodeURIComponent(shop.id || shop.name || '')}`;
+    const detailUrl = listPageDetailHref(shop);
 
     const tags = [
       typeLabel,
@@ -940,6 +957,16 @@ function renderDetailPage() {
         `
             : ''
         }
+        <section class="detail-section">
+          <h2>관리사 정보</h2>
+          <p class="detail-description">
+            ${
+              shop.staffInfo
+                ? shop.staffInfo
+                : '관리사 정보는 예약 시 전화로 안내해드립니다.'
+            }
+          </p>
+        </section>
         ${
           reviews.length
             ? `
@@ -1016,15 +1043,6 @@ function renderDetailPage() {
               : ''
           }
           <div class="detail-cta">
-            ${
-              shop.phone
-                ? `
-            <a href="tel:${shop.phone.replace(/[^0-9]/g, '')}" class="detail-cta-btn">
-              <span>📞</span>
-              전화 문의하기
-            </a>`
-                : ''
-            }
             <p class="detail-cta-note">
               실제 예약 및 결제는 각 업체를 통해 직접 진행되며,
               바로힐링출장마사지는 정보 제공 플랫폼 역할만 수행합니다.
@@ -1033,6 +1051,17 @@ function renderDetailPage() {
         </div>
       </aside>
     </header>
+    ${
+      shop.phone
+        ? `
+    <div class="detail-callbar">
+      <a href="tel:${shop.phone.replace(/[^0-9]/g, '')}" class="detail-callbar-btn" aria-label="전화하기">
+        <span>📞</span>
+        전화하기
+      </a>
+    </div>`
+        : ''
+    }
   `;
 
   // JSON-LD 동적 삽입 (업체별 상세 스키마)

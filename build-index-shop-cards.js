@@ -197,6 +197,22 @@ function shopPhoneDigitsForTel(phone) {
   return String(phone || '').replace(/[^\d]/g, '');
 }
 
+function parseFirst(val) {
+  return String(val || '').split(',')[0].trim();
+}
+
+function staticDetailHref(shop) {
+  const region = parseFirst(shop.region);
+  const district = parseFirst(shop.district);
+  const name = String(shop.name || '').trim();
+  const base = [region, district, name, '출장마사지']
+    .filter(Boolean)
+    .join('-')
+    .replace(/\s+/g, '-');
+  const slug = base || String(shop.id || shop.name || 'detail');
+  return encodeURI(`shops/${slug}.html`);
+}
+
 /** app.js shopCardPriceRowHtml 과 동일 (정적 HTML 소스에 전화 노출) */
 function shopCardPriceRowHtml(shop) {
   const priceStr = escapeHtml(formatPrice(shop.price));
@@ -220,7 +236,7 @@ function renderOneCard(shop) {
   const rating =
     shop.rating || shop.rating === 0 ? shop.rating.toFixed(1) : null;
   const reviewCount = shop.reviewCount || 0;
-  const detailUrl = `detail.html?id=${encodeURIComponent(shop.id || shop.name || '')}`;
+  const detailUrl = staticDetailHref(shop);
   const name = shop.name || '출장마사지 업체';
 
   return `

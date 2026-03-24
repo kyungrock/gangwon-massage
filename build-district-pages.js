@@ -353,13 +353,27 @@ function toAbsoluteAssetUrl(u) {
   return `${SITE_ORIGIN}/${pathPart}`;
 }
 
+function parseFirst(val) {
+  return String(val || '').split(',')[0].trim();
+}
+
+function staticDetailPath(shop) {
+  const region = parseFirst(shop.region);
+  const district = parseFirst(shop.district);
+  const name = String(shop.name || '').trim();
+  const base = [region, district, name, '출장마사지']
+    .filter(Boolean)
+    .join('-')
+    .replace(/\s+/g, '-');
+  const slug = base || String(shop.id || shop.name || 'detail');
+  return `shops/${slug}.html`;
+}
+
 function buildDistrictJsonLd({ district, filtered, canonicalUrl }) {
   const items = filtered.map((shop, idx) => {
     const imgRaw = shop.image || '';
     const img = imgRaw ? toAbsoluteAssetUrl(imgRaw) : undefined;
-    const url = shop.id || shop.name
-      ? `${SITE_ORIGIN}/detail.html?id=${encodeURIComponent(String(shop.id || shop.name))}`
-      : undefined;
+    const url = `${SITE_ORIGIN}/${encodeURI(staticDetailPath(shop))}`;
     return {
       '@type': 'ListItem',
       position: idx + 1,
@@ -446,7 +460,7 @@ function renderDistrictListPage({ district, shops, year }) {
       const rating =
         shop.rating || shop.rating === 0 ? shop.rating.toFixed(1) : null;
       const reviewCount = shop.reviewCount || 0;
-      const detailUrl = `../detail.html?id=${encodeURIComponent(shop.id || shop.name || '')}`;
+      const detailUrl = `../${encodeURI(staticDetailPath(shop))}`;
       const name = shop.name || '출장마사지 업체';
       const priceStr = formatPrice(shop.price);
 

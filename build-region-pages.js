@@ -116,6 +116,22 @@ function shopCardPriceRowHtml(shop) {
   return `<div class="shop-card-price-row"><div class="shop-card-price">${priceStr}</div><span class="shop-card-phone"${dt}>📞 ${escapeHtml(phoneRaw)}</span></div>`;
 }
 
+function parseFirst(val) {
+  return String(val || '').split(',')[0].trim();
+}
+
+function staticDetailPath(shop) {
+  const region = parseFirst(shop.region);
+  const district = parseFirst(shop.district);
+  const name = String(shop.name || '').trim();
+  const base = [region, district, name, '출장마사지']
+    .filter(Boolean)
+    .join('-')
+    .replace(/\s+/g, '-');
+  const slug = base || String(shop.id || shop.name || 'detail');
+  return `shops/${slug}.html`;
+}
+
 function baroDistrictLinkLabel(regionName, districtName) {
   if (BARO_AMBIGUOUS_DISTRICT.has(districtName)) {
     return `${regionName}${districtName}출장마사지`;
@@ -146,9 +162,7 @@ function renderRegionStaticBaroHtml(region, districts) {
 
 function buildRegionJsonLd({ region, filtered, canonicalUrl }) {
   const items = filtered.map((shop, idx) => {
-    const url = shop.id || shop.name
-      ? `${SITE_ORIGIN}/detail.html?id=${encodeURIComponent(String(shop.id || shop.name))}`
-      : undefined;
+    const url = `${SITE_ORIGIN}/${encodeURI(staticDetailPath(shop))}`;
     return {
       '@type': 'ListItem',
       position: idx + 1,
@@ -219,7 +233,7 @@ function renderRegionPage({ region, regionDistricts, shops, year, koreaRegionsRa
       const rating =
         shop.rating || shop.rating === 0 ? shop.rating.toFixed(1) : null;
       const reviewCount = shop.reviewCount || 0;
-      const detailUrl = `../detail.html?id=${encodeURIComponent(shop.id || shop.name || '')}`;
+      const detailUrl = `../${encodeURI(staticDetailPath(shop))}`;
       const name = shop.name || '출장마사지 업체';
 
       return `
@@ -307,8 +321,17 @@ function renderRegionPage({ region, regionDistricts, shops, year, koreaRegionsRa
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(desc)}" />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="바로힐링출장마사지" />
+    <meta property="og:title" content="${escapeHtml(title)}" />
+    <meta property="og:description" content="${escapeHtml(desc)}" />
+    <meta property="og:url" content="${escapeHtml(canonicalUrl)}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${escapeHtml(title)}" />
+    <meta name="twitter:description" content="${escapeHtml(desc)}" />
     <link rel="stylesheet" href="../styles.css?v=${ASSET_VERSION}" />
     <script type="application/ld+json">
 ${JSON.stringify(ld, null, 2)}

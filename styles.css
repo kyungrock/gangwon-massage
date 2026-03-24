@@ -1160,6 +1160,43 @@ body[data-page='district-static'] .shop-card-phone {
   font-size: 1rem;
 }
 
+.detail-callbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  padding: 0.55rem 0.8rem calc(0.55rem + env(safe-area-inset-bottom));
+  background: rgba(2, 6, 23, 0.9);
+  border-top: 1px solid rgba(55, 65, 81, 0.95);
+  backdrop-filter: blur(8px);
+}
+
+.detail-callbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: min(560px, 100%);
+  margin: 0 auto;
+  border-radius: 12px;
+  padding: 0.72rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #22c55e, #4ade80);
+  color: #052e16;
+  border: none;
+}
+
+.detail-callbar-btn span {
+  font-size: 1.05rem;
+}
+
+body[data-page='detail'] .site-main,
+body[data-page='detail-static'] .site-main {
+  padding-bottom: 5.2rem;
+}
+
 .detail-back-link {
   display: inline-flex;
   align-items: center;

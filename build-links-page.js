@@ -96,8 +96,23 @@ ${districtBlock}
       name="description"
       content="서울·경기·인천 등 전국 광역시도 및 시·군·구별 출장마사지 정적 페이지 바로가기 모음입니다."
     />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
     <link rel="canonical" href="https://outcallmassage.co.kr/links.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="바로힐링출장마사지" />
+    <meta property="og:title" content="바로가기 | 전국 출장마사지 지역·시군구 링크 | 바로힐링출장마사지" />
+    <meta
+      property="og:description"
+      content="서울·경기·인천 등 전국 광역시도 및 시·군·구별 출장마사지 정적 페이지 바로가기 모음입니다."
+    />
+    <meta property="og:url" content="https://outcallmassage.co.kr/links.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="바로가기 | 전국 출장마사지 지역·시군구 링크 | 바로힐링출장마사지" />
+    <meta
+      name="twitter:description"
+      content="서울·경기·인천 등 전국 광역시도 및 시·군·구별 출장마사지 정적 페이지 바로가기 모음입니다."
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body data-page="links">
