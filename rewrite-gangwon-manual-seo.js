@@ -67,7 +67,7 @@ function mergeLocal(local) {
 }
 
 function buildRegionSeo(p) {
-  const keyword = '강원 출장마사지';
+  const keyword = '강원도 출장마사지';
   const local = mergeLocal(p.local);
   const intros = [
     `차에서 내리자마자 한숨이 먼저 나왔다. 아, 오늘 진짜 길었다.`,
@@ -79,7 +79,7 @@ function buildRegionSeo(p) {
   return `
       <section class="seo-section" aria-labelledby="seo-gangwon-manual-title">
         <div class="container seo-inner">
-          <h2 id="seo-gangwon-manual-title" class="seo-title">강원 루트 뒤에 남는 피로, 왜 늦게 커질까</h2>
+          <h2 id="seo-gangwon-manual-title" class="seo-title">강원도 루트 뒤에 남는 피로, 왜 늦게 커질까</h2>
           <p>
             ${escapeHtml(intro)} 이동은 길었는데 쉬는 타이밍은 짧았고, 끝났다고 생각한 뒤에야 어깨와 허리가 동시에 무거워졌다.
             강원권 일정은 산줄기와 동해, 접경 축이 한날에 겹치기 쉬워서 리듬이 단순하지 않다. 춘천·남이섬에서 시작해 강릉·속초·동해로 흐르고, 평창·정선이나 원주·태백으로 갈라지는 동선은 보기엔 여행이지만 몸에는 반복 탑승으로 남는다.
@@ -90,7 +90,7 @@ function buildRegionSeo(p) {
             그때 ${escapeHtml(local)} 같은 로컬 구간을 지나면 도착 후에도 긴장이 남아 근육 이완이 늦다.
           </p>
           <p>
-            강원 전체는 지도가 넓은 만큼 피로도 넓게 퍼진다. 그래서 <strong>${keyword}</strong>를 찾을 때는 강도보다 맥락이 우선이다.
+            강원도 전체는 지도가 넓은 만큼 피로도 넓게 퍼진다. 그래서 <strong>${keyword}</strong>를 찾을 때는 강도보다 맥락이 우선이다.
             오늘 어디를 지나왔는지 한 줄로 정리해 전달하면 피로 회복 포인트가 빠르게 맞춰진다.
           </p>
           <h3>예약 메모</h3>
@@ -129,7 +129,7 @@ function introForDistrict(local, district, idx) {
 }
 
 function buildDistrictSeo(district, p, idx) {
-  const keyword = `강원 ${district} 출장마사지`;
+  const keyword = `강원도 ${district} 출장마사지`;
   const local = mergeLocal(p.local);
   const intros = [
     `엘리베이터 문이 닫히는 순간, ${district}에서 보낸 하루가 한꺼번에 밀려왔다.`,
@@ -156,10 +156,10 @@ function buildDistrictSeo(district, p, idx) {
   return `
       <section class="seo-section" aria-labelledby="seo-gangwon-${district}-manual-title">
         <div class="container seo-inner">
-          <h2 id="seo-gangwon-${district}-manual-title" class="seo-title">강원 ${district} 동선 피로, 오늘 루트 기준 요약</h2>
+          <h2 id="seo-gangwon-${district}-manual-title" class="seo-title">강원도 ${district} 동선 피로, 오늘 루트 기준 요약</h2>
           <p>
             ${escapeHtml(intro)} 이 페이지 스토리는 <strong>강원.${escapeHtml(district)}</strong> 블록 하나만 근거로 다시 작성했다.
-            강원 전체 맥락은 보조로만 두고, 다른 시/구 정보는 섞지 않았다.
+            강원도 전체 맥락은 보조로만 두고, 다른 시/구 정보는 섞지 않았다.
           </p>
           <p>
             ${escapeHtml(body)}
@@ -197,8 +197,8 @@ function buildDistrictSeo(district, p, idx) {
 function main() {
   const md = fs.readFileSync(PROFILE_PATH, 'utf8');
   const profiles = parseProfiles(md);
-  const regionProfile = profiles.get('강원');
-  if (!regionProfile) throw new Error('강원 프로필을 찾지 못했습니다.');
+  const regionProfile = profiles.get('강원도');
+  if (!regionProfile) throw new Error('강원도 프로필을 찾지 못했습니다.');
 
   const regionHtml = fs.readFileSync(REGION_PATH, 'utf8');
   fs.writeFileSync(REGION_PATH, upsertSeoSection(regionHtml, buildRegionSeo(regionProfile)), 'utf8');
@@ -218,7 +218,7 @@ function main() {
     fs.writeFileSync(file, upsertSeoSection(html, buildDistrictSeo(d, p, idx)), 'utf8');
   });
 
-  console.log('[done] 강원 region + 18 district 1000자 이하형 SEO 재작성 완료');
+  console.log('[done] 강원도 region + 18 district 1000자 이하형 SEO 재작성 완료');
 }
 
 if (require.main === module) {

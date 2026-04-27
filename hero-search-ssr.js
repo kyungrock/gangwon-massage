@@ -88,9 +88,9 @@ function renderHeroSearchHtml(shops) {
   const { regions, districtsByRegion, dongsByRegionDistrict } =
     buildFiltersFromData(shops);
 
-  if (regions.has('강원')) {
-    if (!districtsByRegion['강원']) districtsByRegion['강원'] = new Set();
-    KANGWON_DISTRICTS.forEach((d) => districtsByRegion['강원'].add(d));
+  if (regions.has('강원도')) {
+    if (!districtsByRegion['강원도']) districtsByRegion['강원도'] = new Set();
+    KANGWON_DISTRICTS.forEach((d) => districtsByRegion['강원도'].add(d));
   }
 
   const sortKo = (a, b) => String(a).localeCompare(String(b), 'ko');

@@ -386,7 +386,7 @@ function buildDistrictJsonLd({ district, filtered, canonicalUrl }) {
         address: {
           '@type': 'PostalAddress',
           addressCountry: 'KR',
-          addressRegion: shop.region || '강원',
+          addressRegion: shop.region || '강원도',
           addressLocality: shop.district || district,
           streetAddress: shop.address || undefined,
         },
@@ -407,7 +407,7 @@ function buildDistrictJsonLd({ district, filtered, canonicalUrl }) {
     '@type': 'CollectionPage',
     name: `${district} 출장마사지`,
     url: canonicalUrl,
-    about: `강원 ${district} 출장마사지`,
+    about: `강원도 ${district} 출장마사지`,
     mainEntity: {
       '@type': 'ItemList',
       itemListElement: items,
@@ -427,7 +427,7 @@ function renderDistrictListPage({ district, shops, year }) {
   const filtered = shops
     .filter((shop) => {
       const regionKeys = parseMultiValue(shop.region).map(normalizeRegionDisplay);
-      if (!regionKeys.includes('강원')) return false;
+      if (!regionKeys.includes('강원도')) return false;
       const ds = parseMultiValue(shop.district);
       return ds.includes(district);
     })
@@ -593,9 +593,9 @@ ${JSON.stringify(ld, null, 2)}
   <body data-page="district-static" data-district="${escapeHtml(district)}">
     <header class="site-header">
       <div class="container header-inner">
-        <a href="../index.html?region=강원" class="logo">바로힐링출장마사지</a>
+        <a href="../index.html?region=강원도" class="logo">바로힐링출장마사지</a>
         <nav class="main-nav">
-          <a href="../index.html?region=강원" class="nav-link">메인</a>
+          <a href="../index.html?region=강원도" class="nav-link">메인</a>
           <a href="../board.html" class="nav-link">게시판/검색</a>
         </nav>
       </div>

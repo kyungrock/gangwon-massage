@@ -81,7 +81,7 @@ function getKnownRegionNamesSetForBuild() {
     '울산',
     '세종',
     '경기',
-    '강원',
+    '강원도',
     '충북',
     '충남',
     '전북',
@@ -309,7 +309,7 @@ function main() {
   const shops = loadShops();
   let data = filterShops({
     shops,
-    region: '강원',
+    region: '강원도',
     district: '',
     dong: '',
     type: '',
@@ -351,7 +351,7 @@ ${renderHeroSearchHtml(shops)}
 
   fs.writeFileSync(INDEX_FILE, indexHtml, 'utf8');
   console.log(
-    ` - 완료: hero-search 정적 옵션 + 강원 기본 ${data.length}개 카드 → ${INDEX_FILE}`
+    ` - 완료: hero-search 정적 옵션 + 강원도 기본 ${data.length}개 카드 → ${INDEX_FILE}`
   );
 }
 
