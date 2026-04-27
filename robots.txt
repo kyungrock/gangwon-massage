@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
 
-# 강원도출장마사지 사이트맵 위치
+# 바로힐링출장마사지 사이트맵 위치
 Sitemap: https://outcallmassage.co.kr/sitemap.xml
 
