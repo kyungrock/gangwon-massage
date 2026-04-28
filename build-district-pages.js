@@ -19,6 +19,7 @@ const { SITE_ORIGIN } = require('./site.config.js');
 
 const ROOT = __dirname;
 const SHOPS_FILE = path.join(ROOT, 'shops.json');
+const KOREA_REGIONS_FILE = path.join(ROOT, 'korea-regions.json');
 const OUT_DIR = path.join(ROOT, 'districts');
 const ASSET_VERSION = '20260319-2';
 
@@ -305,6 +306,47 @@ function normalizeRegionDisplay(region) {
   return r;
 }
 
+function loadRegionsDataForDup() {
+  const raw = fs.readFileSync(KOREA_REGIONS_FILE, 'utf8');
+  const parsed = JSON.parse(raw);
+  const regions = Array.isArray(parsed.regions) ? parsed.regions : [];
+  return regions
+    .map((r) => ({
+      name: normalizeRegionDisplay(r.name || ''),
+      districts: Array.isArray(r.districts)
+        ? r.districts.map((d) => String(d || '').trim()).filter(Boolean)
+        : [],
+    }))
+    .filter((r) => r.name);
+}
+
+function buildDistrictDuplicateCount(regionsData) {
+  const counts = new Map();
+  regionsData.forEach((reg) => {
+    reg.districts.forEach((d) => {
+      counts.set(d, (counts.get(d) || 0) + 1);
+    });
+  });
+  return counts;
+}
+
+function regionShortForHeadline(region) {
+  const r = String(region || '').trim();
+  if (r === '강원') return '강원도';
+  return r;
+}
+
+/** 강원도 시/군 전용: 시군구명이 전국에서 유일하면 접두 생략 */
+function kangwonDistrictHeadline(district, districtDupCounts) {
+  const d = String(district || '').trim();
+  if (!d) return '';
+  if ((districtDupCounts.get(d) || 0) > 1) {
+    const r = regionShortForHeadline('강원');
+    return `${r} ${d}`;
+  }
+  return d;
+}
+
 function isProbablyRemoteUrl(u) {
   const s = String(u || '').trim();
   return /^https?:\/\//i.test(s) || /^data:/i.test(s);
@@ -369,7 +411,7 @@ function staticDetailPath(shop) {
   return `shops/${slug}.html`;
 }
 
-function buildDistrictJsonLd({ district, filtered, canonicalUrl }) {
+function buildDistrictJsonLd({ district, filtered, canonicalUrl, headline }) {
   const items = filtered.map((shop, idx) => {
     const imgRaw = shop.image || '';
     const img = imgRaw ? toAbsoluteAssetUrl(imgRaw) : undefined;
@@ -405,9 +447,9 @@ function buildDistrictJsonLd({ district, filtered, canonicalUrl }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `${district} 출장마사지`,
+    name: `${headline} 출장마사지`,
     url: canonicalUrl,
-    about: `강원도 ${district} 출장마사지`,
+    about: `${headline} 출장마사지`,
     mainEntity: {
       '@type': 'ItemList',
       itemListElement: items,
@@ -415,7 +457,7 @@ function buildDistrictJsonLd({ district, filtered, canonicalUrl }) {
   };
 }
 
-function renderDistrictListPage({ district, shops, year }) {
+function renderDistrictListPage({ district, shops, year, districtDupCounts }) {
   const heroSearchHtml = renderHeroSearchHtml(shops);
   const seo = DISTRICT_SEO[district] || {
     vibe: '강원도 지역',
@@ -443,8 +485,9 @@ function renderDistrictListPage({ district, shops, year }) {
       return (b.reviewCount || 0) - (a.reviewCount || 0);
     });
 
-  const title = `${district} 출장마사지 | 바로힐링출장마사지`;
-  const desc = `${district} 출장마사지 업체의 가격, 코스, 영업시간, 주소, 전화번호 정보를 한눈에 비교하세요.`;
+  const headline = kangwonDistrictHeadline(district, districtDupCounts);
+  const title = `${headline} 출장마사지 20대,30대 | 바로힐링출장마사지`;
+  const desc = `${headline} 출장마사지 업체의 가격, 코스, 영업시간, 주소, 전화번호 정보를 한눈에 비교하세요.`;
 
   // 홈 index.html → app.js renderMainCards() 와 동일 마크업 (detail 경로만 ../ )
   const cardsHtml = filtered
@@ -535,22 +578,22 @@ function renderDistrictListPage({ district, shops, year }) {
     .join('\n');
 
   const canonicalUrl = `${SITE_ORIGIN}/districts/${encodeURI(`${district}출장마사지.html`)}`;
-  const ld = buildDistrictJsonLd({ district, filtered, canonicalUrl });
+  const ld = buildDistrictJsonLd({ district, filtered, canonicalUrl, headline });
 
   const seoHtml = `
 <section class="seo-section">
   <div class="container seo-inner">
-    <h2 class="seo-title">${escapeHtml(district)} 출장마사지 안내</h2>
+    <h2 class="seo-title">${escapeHtml(headline)} 출장마사지 안내</h2>
     <p>
-      ${escapeHtml(district)}은(는) ${escapeHtml(seo.vibe)}입니다.
-      그래서 <strong>${escapeHtml(district)} 출장마사지</strong>는 “이동 없이 편하게 받는 관리”라는 장점이 특히 크게 느껴지는 지역이에요.
+      ${escapeHtml(headline)}은(는) ${escapeHtml(seo.vibe)}입니다.
+      그래서 <strong>${escapeHtml(headline)} 출장마사지</strong>는 “이동 없이 편하게 받는 관리”라는 장점이 특히 크게 느껴지는 지역이에요.
       아래 업체 카드는 홈과 동일한 구성으로 지역·영업시간·가격·소개·서비스를 보여 주며, 전화·주소 등은 상세 페이지 및 구조화 데이터(JSON-LD)에서 함께 확인할 수 있습니다.
     </p>
     <p>
-      이 페이지는 <strong>${escapeHtml(district)} 지역</strong>에서 출장마사지가 필요할 때, 누구나 한 번에 판단할 수 있도록 핵심 정보를 노출하는 것을 목표로 합니다.
+      이 페이지는 <strong>${escapeHtml(headline)} 지역</strong>에서 출장마사지가 필요할 때, 누구나 한 번에 판단할 수 있도록 핵심 정보를 노출하는 것을 목표로 합니다.
       이용자 유형으로는 ${escapeHtml(seo.audience)} 수요가 많습니다.
     </p>
-    <h3>${escapeHtml(district)} 출장마사지가 특히 좋은 상황</h3>
+    <h3>${escapeHtml(headline)} 출장마사지가 특히 좋은 상황</h3>
     <p>${escapeHtml(seo.highlights[0] || '')}</p>
     <p>${escapeHtml(seo.highlights[1] || '')}</p>
     <p>${escapeHtml(seo.highlights[2] || '')}</p>
@@ -560,9 +603,9 @@ function renderDistrictListPage({ district, shops, year }) {
     <p>${escapeHtml(seo.tips[1] || '')}</p>
     <p>${escapeHtml(seo.tips[2] || '')}</p>
 
-    <h3>${escapeHtml(district)} 출장마사지 FAQ</h3>
+    <h3>${escapeHtml(headline)} 출장마사지 FAQ</h3>
     <p>
-      <strong>Q. ${escapeHtml(district)} 출장마사지는 당일 예약도 가능한가요?</strong><br />
+      <strong>Q. ${escapeHtml(headline)} 출장마사지는 당일 예약도 가능한가요?</strong><br />
       A. 업체별로 다르지만, 가능한 시간대를 먼저 확인하면 당일 예약도 원활합니다. 성수기/주말에는 조기 마감될 수 있어요.
     </p>
     <p>
@@ -571,7 +614,7 @@ function renderDistrictListPage({ district, shops, year }) {
     </p>
     <p>
       <strong>Q. 예약할 때 가장 먼저 전달해야 할 정보는?</strong><br />
-      A. ${escapeHtml(district)} 내 정확한 위치(건물명/호수), 희망 시간대, 원하는 관리 종류(오일/건식), 주차/출입 정보입니다.
+      A. ${escapeHtml(headline)} 내 정확한 위치(건물명/호수), 희망 시간대, 원하는 관리 종류(오일/건식), 주차/출입 정보입니다.
     </p>
   </div>
 </section>`;
@@ -606,9 +649,9 @@ ${JSON.stringify(ld, null, 2)}
       <section class="hero">
         <div class="container hero-inner">
           <div class="hero-text">
-            <h1>${escapeHtml(district)} 출장마사지 검색</h1>
+            <h1>${escapeHtml(headline)} 출장마사지 검색</h1>
             <p>
-              아래 필터로 <strong>${escapeHtml(district)}</strong> 업체를 동·읍·면·테마·키워드까지 좁혀 볼 수 있습니다.
+              아래 필터로 <strong>${escapeHtml(headline)}</strong> 업체를 동·읍·면·테마·키워드까지 좁혀 볼 수 있습니다.
               메인 화면과 동일한 검색 폼이며, 결과는 이 페이지 카드 목록에 반영됩니다.
             </p>
           </div>
@@ -619,9 +662,9 @@ ${heroSearchHtml}
       <section class="cards-section">
         <div class="container">
           <div class="section-header section-header-bottom">
-            <h1 style="margin:0 0 0.5rem;">${escapeHtml(district)} 출장마사지</h1>
+            <h1 style="margin:0 0 0.5rem;">${escapeHtml(headline)} 출장마사지</h1>
             <p class="section-subtitle" style="margin:0 0 1rem;">
-              강원도 출장마사지 업체를 ${escapeHtml(district)} 기준으로 모았습니다.
+              강원도 출장마사지 업체를 ${escapeHtml(headline)} 기준으로 모았습니다.
             </p>
             <p style="margin:0 0 1.2rem; color:#6b7280;">
               총 ${escapeHtml(filtered.length)}개 업체
@@ -637,7 +680,7 @@ ${heroSearchHtml}
             ${
               filtered.length
                 ? cardsHtml
-                : `<p class="no-results">현재 ${escapeHtml(district)} 지역 업체 정보가 준비중입니다.</p>`
+                : `<p class="no-results">현재 ${escapeHtml(headline)} 출장마사지 업체 정보가 준비중입니다.</p>`
             }
           </div>
           <p id="noResultsMessage" class="no-results" hidden>
@@ -668,11 +711,18 @@ ${heroSearchHtml}
 function main() {
   console.log('▶ district 정적 페이지 생성 시작');
   const shops = loadShops();
+  const regionsData = loadRegionsDataForDup();
+  const districtDupCounts = buildDistrictDuplicateCount(regionsData);
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
 
   const year = String(new Date().getFullYear());
   KANGWON_DISTRICTS.forEach((district) => {
-    const html = renderDistrictListPage({ district, shops, year });
+    const html = renderDistrictListPage({
+      district,
+      shops,
+      year,
+      districtDupCounts,
+    });
     const outPath = path.join(OUT_DIR, `${district}출장마사지.html`);
     fs.writeFileSync(outPath, html, 'utf8');
   });

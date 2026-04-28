@@ -1768,21 +1768,34 @@ function initCurrentYear() {
   }
 }
 
-/** 시·군 정적 페이지 바로가기 링크 문구 (links.html 과 동일 규칙) */
-const BARO_AMBIGUOUS_DISTRICT = new Set([
-  '중구',
-  '서구',
-  '남구',
-  '북구',
-  '동구',
-  '강서구',
-]);
+let __districtDupCountsCache = null;
 
-function baroDistrictLinkLabel(regionName, districtName) {
-  if (BARO_AMBIGUOUS_DISTRICT.has(districtName)) {
-    return `${regionName}${districtName}출장마사지`;
+function buildDistrictDupCountsFromKorea() {
+  const m = new Map();
+  const Korea = window.koreaRegionsData;
+  if (!Korea?.regions?.length) return m;
+  Korea.regions.forEach((reg) => {
+    const dists = Array.isArray(reg.districts) ? reg.districts : [];
+    dists.forEach((d0) => {
+      const d = String(d0 || '').trim();
+      if (!d) return;
+      m.set(d, (m.get(d) || 0) + 1);
+    });
+  });
+  return m;
+}
+
+function districtDupCountsMemo() {
+  if (!__districtDupCountsCache) {
+    __districtDupCountsCache = buildDistrictDupCountsFromKorea();
   }
-  return `${districtName}출장마사지`;
+  return __districtDupCountsCache;
+}
+
+/** 시·군 정적 페이지 바로가기 링크 문구 (korea-regions 기준 시군구명 전국 중복 여부) */
+function baroDistrictLinkLabel(regionName, districtName) {
+  const dup = (districtDupCountsMemo().get(districtName) || 0) > 1;
+  return dup ? `${regionName}${districtName}출장마사지` : `${districtName}출장마사지`;
 }
 
 /**

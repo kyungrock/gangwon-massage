@@ -10,16 +10,6 @@ const ROOT = __dirname;
 const KOREA = path.join(ROOT, 'korea-regions.json');
 const OUT = path.join(ROOT, 'links.html');
 
-/** 여러 시·도에 같은 이름이 있을 때만 지역명을 붙여 표기 (예: 서울중구출장마사지) */
-const AMBIGUOUS_DISTRICT = new Set([
-  '중구',
-  '서구',
-  '남구',
-  '북구',
-  '동구',
-  '강서구',
-]);
-
 function escapeHtml(str) {
   return String(str || '')
     .replace(/&/g, '&amp;')
@@ -28,11 +18,28 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-function districtLinkText(regionName, districtName) {
-  if (AMBIGUOUS_DISTRICT.has(districtName)) {
-    return `${regionName}${districtName}출장마사지`;
-  }
-  return `${districtName}출장마사지`;
+function normalizeRegionDisplay(region) {
+  const r = String(region || '').trim();
+  if (r.endsWith('도') && r.length >= 2) return r.slice(0, -1);
+  return r;
+}
+
+function districtDupCountsFromRegions(regionsArr) {
+  const counts = new Map();
+  (regionsArr || []).forEach((r0) => {
+    (r0.districts || []).forEach((d0) => {
+      const d = String(d0 || '').trim();
+      if (!d) return;
+      counts.set(d, (counts.get(d) || 0) + 1);
+    });
+  });
+  return counts;
+}
+
+function districtLinkText(regionName, districtName, districtDupCounts) {
+  const rn = normalizeRegionDisplay(regionName);
+  const dup = (districtDupCounts.get(districtName) || 0) > 1;
+  return dup ? `${rn}${districtName}출장마사지` : `${districtName}출장마사지`;
 }
 
 function districtFileName(regionName, districtName) {
@@ -43,6 +50,7 @@ function main() {
   const raw = fs.readFileSync(KOREA, 'utf8');
   const data = JSON.parse(raw);
   const regions = data.regions || [];
+  const districtDupCounts = districtDupCountsFromRegions(regions);
 
   const tocItems = regions
     .map((r, i) => {
@@ -62,7 +70,7 @@ function main() {
       const districtItems = (r.districts || []).map((d) => {
         const file = districtFileName(rn, d);
         const href = encodeURI(`districts/${file}`);
-        const text = districtLinkText(rn, d);
+        const text = districtLinkText(rn, d, districtDupCounts);
         return `            <li><a href="${href}">${escapeHtml(text)}</a></li>`;
       });
 

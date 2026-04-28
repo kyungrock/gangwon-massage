@@ -21,14 +21,6 @@ const SHOPS_FILE = path.join(ROOT, 'shops.json');
 const KOREA_REGIONS_FILE = path.join(ROOT, 'korea-regions.json');
 const OUT_DIR = path.join(ROOT, 'regions');
 const ASSET_VERSION = '20260319-3';
-const BARO_AMBIGUOUS_DISTRICT = new Set([
-  '중구',
-  '서구',
-  '남구',
-  '북구',
-  '동구',
-  '강서구',
-]);
 
 function escapeHtml(str) {
   return String(str || '')
@@ -85,9 +77,37 @@ function loadRegionsData() {
   return regions
     .map((r) => ({
       name: normalizeRegionDisplay(r.name || ''),
-      districts: Array.isArray(r.districts) ? r.districts : [],
+      districts: Array.isArray(r.districts)
+        ? r.districts.map((d) => String(d || '').trim()).filter(Boolean)
+        : [],
     }))
     .filter((r) => r.name);
+}
+
+function buildDistrictDuplicateCount(regionsData) {
+  const counts = new Map();
+  regionsData.forEach((r) => {
+    r.districts.forEach((d) => {
+      counts.set(d, (counts.get(d) || 0) + 1);
+    });
+  });
+  return counts;
+}
+
+function regionShortForHeadline(region) {
+  const r = String(region || '').trim();
+  if (r === '강원') return '강원도';
+  return r;
+}
+
+function districtPageHeadline(region, district, districtDupCounts) {
+  const d = String(district || '').trim();
+  const r = regionShortForHeadline(region);
+  if (!d) return r;
+  if ((districtDupCounts.get(d) || 0) > 1) {
+    return r ? `${r} ${d}` : d;
+  }
+  return d;
 }
 
 function formatLocationDisplay(shop) {
@@ -132,20 +152,18 @@ function staticDetailPath(shop) {
   return `shops/${slug}.html`;
 }
 
-function baroDistrictLinkLabel(regionName, districtName) {
-  if (BARO_AMBIGUOUS_DISTRICT.has(districtName)) {
-    return `${regionName}${districtName}출장마사지`;
-  }
-  return `${districtName}출장마사지`;
+function baroDistrictLinkLabel(regionName, districtName, districtDupCounts) {
+  const dup = (districtDupCounts.get(districtName) || 0) > 1;
+  return dup ? `${regionName}${districtName}출장마사지` : `${districtName}출장마사지`;
 }
 
-function renderRegionStaticBaroHtml(region, districts) {
+function renderRegionStaticBaroHtml(region, districts, districtDupCounts) {
   const linksFile = encodeURI('../links.html');
   const linksHtml = districts
     .map((d) => {
       const file = encodeURI(`${region}-${d}출장마사지.html`);
       const href = `../districts/${file}`;
-      const label = baroDistrictLinkLabel(region, d);
+      const label = baroDistrictLinkLabel(region, d, districtDupCounts);
       return `<a class="static-baro-link" href="${href}">${escapeHtml(label)}</a>`;
     })
     .join('');
@@ -195,7 +213,14 @@ function buildRegionJsonLd({ region, filtered, canonicalUrl }) {
   };
 }
 
-function renderRegionPage({ region, regionDistricts, shops, year, koreaRegionsRaw }) {
+function renderRegionPage({
+  region,
+  regionDistricts,
+  shops,
+  year,
+  koreaRegionsRaw,
+  districtDupCounts,
+}) {
   const regionFile = `${region}출장마사지.html`;
   const filtered = shops
     .filter((shop) => {
@@ -307,12 +332,16 @@ function renderRegionPage({ region, regionDistricts, shops, year, koreaRegionsRa
     .join('\n');
 
   const districtLinks = regionDistricts
-    .map(
-      (district) =>
-        `<a class="shop-card-tag" href="../districts/${encodeURI(`${region}-${district}출장마사지.html`)}">${escapeHtml(district)} 출장마사지</a>`
-    )
+    .map((district) => {
+      const head = districtPageHeadline(region, district, districtDupCounts);
+      return `<a class="shop-card-tag" href="../districts/${encodeURI(`${region}-${district}출장마사지.html`)}">${escapeHtml(head)} 출장마사지</a>`;
+    })
     .join('\n');
-  const staticBaroHtml = renderRegionStaticBaroHtml(region, regionDistricts);
+  const staticBaroHtml = renderRegionStaticBaroHtml(
+    region,
+    regionDistricts,
+    districtDupCounts
+  );
 
   return `<!DOCTYPE html>
 <html lang="ko">
@@ -422,6 +451,7 @@ function main() {
   console.log('▶ region 정적 페이지 생성 시작');
   const shops = loadShops();
   const regionsData = loadRegionsData();
+  const districtDupCounts = buildDistrictDuplicateCount(regionsData);
   const koreaRegionsRaw = fs.readFileSync(KOREA_REGIONS_FILE, 'utf8');
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -434,6 +464,7 @@ function main() {
       shops,
       year,
       koreaRegionsRaw,
+      districtDupCounts,
     });
     const outPath = path.join(OUT_DIR, `${region}출장마사지.html`);
     fs.writeFileSync(outPath, html, 'utf8');
