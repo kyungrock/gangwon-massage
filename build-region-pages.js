@@ -110,6 +110,51 @@ function districtPageHeadline(region, district, districtDupCounts) {
   return d;
 }
 
+function buildRegionLogSectionHtml(region, regionDistricts, districtDupCounts) {
+  const regionLogRoot = path.join(ROOT, 'seo-topic-logs', region);
+  const regionHubPath = path.join(regionLogRoot, 'index.html');
+  const hasRegionHub = fs.existsSync(regionHubPath);
+
+  const districtLinks = regionDistricts
+    .map((district) => {
+      const districtHubPath = path.join(regionLogRoot, district, 'index.html');
+      if (!fs.existsSync(districtHubPath)) return '';
+      const head = districtPageHeadline(region, district, districtDupCounts);
+      return `<li><a href="../seo-topic-logs/${escapeHtml(region)}/${escapeHtml(district)}/index.html">${escapeHtml(head)} 일자 로그 허브</a></li>`;
+    })
+    .filter(Boolean)
+    .join('\n');
+
+  return `
+      <section class="cards-section">
+        <div class="container">
+          <div class="section-header section-header-bottom">
+            <h2 style="margin:0 0 0.5rem;">${escapeHtml(regionShortForHeadline(region))} 일자 로그</h2>
+            <p style="margin:0 0 1rem; color:#6b7280;">
+              지역 로그 허브와 시/구별 일자 로그 허브를 확인할 수 있습니다.
+            </p>
+            ${
+              hasRegionHub
+                ? `<div class="shop-card-tags" style="margin-bottom:0.75rem;">
+                    <a class="shop-card-tag" href="../seo-topic-logs/${escapeHtml(region)}/index.html">${escapeHtml(regionShortForHeadline(region))} 로그 허브</a>
+                  </div>`
+                : '<article><p style="margin:0 0 0.75rem;">지역 로그 허브가 준비중입니다.</p></article>'
+            }
+            ${
+              districtLinks
+                ? `<article>
+                    <ul style="margin:0.25rem 0 0; padding-left:1.1rem; color:#374151;">
+                      ${districtLinks}
+                    </ul>
+                  </article>`
+                : '<article><p style="margin:0;">등록된 시/구 로그가 준비중입니다.</p></article>'
+            }
+          </div>
+        </div>
+      </section>
+  `;
+}
+
 function formatLocationDisplay(shop) {
   const region = parseMultiValue(shop.region).map(normalizeRegionDisplay).join(' ');
   const district = parseMultiValue(shop.district).join(' ');
@@ -342,6 +387,11 @@ function renderRegionPage({
     regionDistricts,
     districtDupCounts
   );
+  const regionLogSectionHtml = buildRegionLogSectionHtml(
+    region,
+    regionDistricts,
+    districtDupCounts
+  );
 
   return `<!DOCTYPE html>
 <html lang="ko">
@@ -424,6 +474,7 @@ ${heroSearchHtml}
           </p>
         </div>
       </section>
+      ${regionLogSectionHtml}
       </div>
       ${staticBaroHtml}
     </main>

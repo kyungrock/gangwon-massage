@@ -143,6 +143,10 @@ ${districtBlock}
             <strong>지역(광역)</strong> 전체 페이지와 <strong>시·군·구</strong>별 정적 페이지로 바로 이동합니다.
             링크는 <code>korea-regions.json</code> 기준으로 생성됩니다.
           </p>
+          <p class="links-page-desc">
+            <strong>추가 허브:</strong>
+            <a href="seo-topic-logs/index.html">지역·시/구·동 SEO 로그 허브</a>
+          </p>
           <nav class="links-toc" aria-label="광역시도 목차">
 ${tocItems}
           </nav>

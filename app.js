@@ -2047,7 +2047,9 @@ function initServiceTypeToggle() {
     });
   }
 
-  if (!typeSel.value) {
+  // 홈(index)만 기본값을 강제하고,
+  // region/district 정적페이지는 기존 SSR 목록을 보존하기 위해 '전체' 상태를 유지한다.
+  if (!typeSel.value && page === 'index') {
     typeSel.value = '출장마사지';
   }
   syncBarFromSelect();

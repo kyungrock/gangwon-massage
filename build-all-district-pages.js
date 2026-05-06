@@ -20,6 +20,7 @@ const ROOT = __dirname;
 const SHOPS_FILE = path.join(ROOT, 'shops.json');
 const REGIONS_FILE = path.join(ROOT, 'korea-regions.json');
 const OUT_DIR = path.join(ROOT, 'districts');
+const SEO_TOPIC_LOGS_DIR = path.join(ROOT, 'seo-topic-logs');
 const ASSET_VERSION = '20260320-1';
 function escapeHtml(str) {
   return String(str || '')
@@ -214,6 +215,16 @@ function renderDistrictStaticBaroHtml(
       </section>`;
 }
 
+function listDistrictSeoLogDates(region, district) {
+  const logsDir = path.join(SEO_TOPIC_LOGS_DIR, String(region || ''), String(district || ''), 'logs');
+  if (!fs.existsSync(logsDir)) return [];
+  return fs
+    .readdirSync(logsDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.toLowerCase().endsWith('.html'))
+    .map((entry) => entry.name.replace(/\.html$/i, ''))
+    .sort((a, b) => String(b).localeCompare(String(a)));
+}
+
 /** 프런트 filterShops(지역 우선)과 동일: 시/군 페이지도 카드는 해당 광역 전체 업체를 HTML에 박아 넣음 → 소스 보기·크롤러에 노출 */
 function filterShopsByRegion(shops, region) {
   const want = normalizeRegionDisplay(region);
@@ -339,6 +350,18 @@ function renderPage({
   );
 
   const cardsHtml = filtered.map((shop) => renderShopCardArticle(shop)).join('\n');
+  const districtLogDates = listDistrictSeoLogDates(region, district);
+  // file:// 환경 클릭 안정성을 위해 한글 경로를 그대로 사용
+  const districtLogHref = `../seo-topic-logs/${region}/${district}/index.html`;
+  const regionLogHref = `../seo-topic-logs/${region}/index.html`;
+  const districtLogItemsHtml = districtLogDates.length
+    ? districtLogDates
+        .map((d) => {
+          const href = `../seo-topic-logs/${region}/${district}/logs/${d}.html`;
+          return `<li><a href="${href}">${escapeHtml(d)} ${escapeHtml(headline)} 일자 로그</a></li>`;
+        })
+        .join('')
+    : '<li>등록된 일자 로그가 아직 없습니다.</li>';
 
   return `<!DOCTYPE html>
 <html lang="ko">
@@ -401,6 +424,25 @@ ${heroSearchHtml}
             }
           </div>
           <p id="noResultsMessage" class="no-results" hidden>조건에 맞는 업체가 없습니다.</p>
+        </div>
+      </section>
+      <section class="cards-section">
+        <div class="container">
+          <div class="section-header section-header-bottom">
+            <h2 style="margin:0 0 0.5rem;">${escapeHtml(headline)} 일자 로그</h2>
+            <p style="margin:0 0 1rem; color:#6b7280;">
+              최신 로그부터 확인하고 날짜를 클릭해 상세 일자 로그로 이동하세요.
+            </p>
+            <div class="shop-card-tags" style="margin-bottom:0.5rem;">
+              <a class="shop-card-tag" href="${districtLogHref}">${escapeHtml(headline)} 로그 허브</a>
+              <a class="shop-card-tag" href="${regionLogHref}">${escapeHtml(regionShortForHeadline(region))} 로그 허브</a>
+            </div>
+            <article>
+              <ul style="margin:0.25rem 0 0; padding-left:1.1rem; color:#374151;">
+                ${districtLogItemsHtml}
+              </ul>
+            </article>
+          </div>
         </div>
       </section>
       </div>

@@ -29,6 +29,19 @@ function toSiteUrlFromRelPath(relPath) {
 
 function collectHtmlRelativePaths() {
   const relPaths = new Set();
+  function collectHtmlRecursively(baseDir, relPrefix = '') {
+    fs.readdirSync(baseDir, { withFileTypes: true }).forEach((entry) => {
+      const entryRel = relPrefix ? `${relPrefix}/${entry.name}` : entry.name;
+      const entryPath = path.join(baseDir, entry.name);
+      if (entry.isDirectory()) {
+        collectHtmlRecursively(entryPath, entryRel);
+        return;
+      }
+      if (!entry.isFile()) return;
+      if (!entry.name.toLowerCase().endsWith('.html')) return;
+      relPaths.add(entryRel);
+    });
+  }
 
   // roots: 루트 *.html 전부 포함
   fs.readdirSync(ROOT_DIR, { withFileTypes: true }).forEach((entry) => {
@@ -41,12 +54,14 @@ function collectHtmlRelativePaths() {
   ['regions', 'districts', 'shops'].forEach((dirName) => {
     const dirPath = path.join(ROOT_DIR, dirName);
     if (!fs.existsSync(dirPath)) return;
-    fs.readdirSync(dirPath, { withFileTypes: true }).forEach((entry) => {
-      if (!entry.isFile()) return;
-      if (!entry.name.toLowerCase().endsWith('.html')) return;
-      relPaths.add(`${dirName}/${entry.name}`);
-    });
+    collectHtmlRecursively(dirPath, dirName);
   });
+
+  // 계층형 SEO 로그 허브 전체 포함
+  const seoLogsDir = path.join(ROOT_DIR, 'seo-topic-logs');
+  if (fs.existsSync(seoLogsDir)) {
+    collectHtmlRecursively(seoLogsDir, 'seo-topic-logs');
+  }
 
   return relPaths;
 }
