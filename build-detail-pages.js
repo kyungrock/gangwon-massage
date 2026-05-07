@@ -419,25 +419,7 @@ ${JSON.stringify(ld, null, 2)}
                 </p>
               </section>
 
-              ${reviews.length ? `<section class="detail-section">
-                <h2>이용 후기</h2>
-                <div class="detail-reviews">
-                  ${reviews
-                    .map((rev) => `<div class="detail-review-item">
-                      <div class="detail-review-header">
-                        <span>${escapeHtml(rev.name || rev.author || '익명')}</span>
-                        <span class="detail-review-rating">
-                          ${typeof rev.rating === 'number' ? '★ ' + rev.rating.toFixed(1) : ''}
-                          ${rev.date ? '<span style="margin-left:0.4rem;color:#6b7280;">' + escapeHtml(rev.date) + '</span>' : ''}
-                        </span>
-                      </div>
-                      <div class="detail-review-body">
-                        ${escapeHtml(rev.comment || rev.review || '')}
-                      </div>
-                    </div>`)
-                    .join('')}
-                </div>
-              </section>` : ''}
+              ${''}
             </div>
           </header>
         </div>

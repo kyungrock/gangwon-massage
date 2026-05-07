@@ -363,9 +363,10 @@ function shopMatchesDistrictFallback(shop, wantRegion, wantDistrict) {
 }
 
 /**
- * 필터 로직 (출장마사지 카드 = 지역 우선)
- * - 홈·지역·시/군 정적·게시판: 지역(광역)이 선택되면 카드는 항상 그 광역 전체만 대상. 시/구·동은 카드 좁히기에 쓰지 않음(지역 기준 유지).
- * - 키워드에 서울,경기,인천 형태면 키워드 지역 우선으로 시/구·동 필터는 적용하지 않음.
+ * 필터 로직
+ * - region 선택 시 region으로 1차 필터
+ * - district/dong이 있으면 추가로 교집합 필터
+ * - 키워드에 서울,경기,인천 형태(복수 지역)면 district/dong은 무시
  */
 function filterShops({
   shops,
@@ -379,16 +380,8 @@ function filterShops({
   const { regions: kwRegions, rest: kwRest } = parseKeywordRegionsAndRest(keyword);
   const kw = kwRest;
 
-  const regionPriorityListing =
-    (page === 'index' ||
-      page === 'region-static' ||
-      page === 'board' ||
-      page === 'district-static') &&
-    Boolean((region || '').trim());
-
   const skipDistrictDongBecauseKeywordRegions = kwRegions.length > 0;
-  const skipDistrictDong =
-    skipDistrictDongBecauseKeywordRegions || regionPriorityListing;
+  const skipDistrictDong = skipDistrictDongBecauseKeywordRegions;
 
   return shops.filter((shop) => {
     const shopRegions = parseMultiValue(shop.region).map(normalizeRegionDisplay);
