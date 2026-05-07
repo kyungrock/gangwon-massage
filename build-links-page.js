@@ -104,6 +104,7 @@ ${districtBlock}
       name="description"
       content="서울·경기·인천 등 전국 광역시도 및 시·군·구별 출장마사지 정적 페이지 바로가기 모음입니다."
     />
+    <meta name="naver-site-verification" content="29346f2ace289a79948fb843d72189460cd7664c" />
     <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
     <link rel="canonical" href="https://outcallmassage.co.kr/links.html" />
     <meta property="og:type" content="website" />

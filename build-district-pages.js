@@ -626,6 +626,7 @@ function renderDistrictListPage({ district, shops, year, districtDupCounts }) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(desc)}" />
+    <meta name="naver-site-verification" content="29346f2ace289a79948fb843d72189460cd7664c" />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
     <link rel="stylesheet" href="../styles.css?v=${ASSET_VERSION}" />

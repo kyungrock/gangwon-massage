@@ -162,6 +162,7 @@ def html_shell(title: str, canonical: str, description: str, body_html: str) -> 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{escape(title)}</title>
   <meta name="description" content="{escape(description)}" />
+  <meta name="naver-site-verification" content="29346f2ace289a79948fb843d72189460cd7664c" />
   <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large" />
   <link rel="canonical" href="{escape(canonical)}" />
   <style>
